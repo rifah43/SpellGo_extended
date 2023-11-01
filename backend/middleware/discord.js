@@ -11,7 +11,7 @@ client.on('messageCreate', (message) => {
   if(message.author.bot) return;
   message.reply({ content: 'Hello to the world of Algorithm Learning!'});
 });
-client.login(`${process.env.DISCORD_TOKEN}`);
+// client.login(`${process.env.DISCORD_TOKEN}`);
 const messages = [];
   
   router.post('/user/send-message', (req, res) => {

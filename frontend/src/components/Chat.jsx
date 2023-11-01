@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const Chat = () => {
   const [prompt, setPrompt] = useState('');
@@ -7,17 +8,13 @@ const Chat = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const resp = await fetch('http://localhost:5000/user/chatbot', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt: prompt }), 
+      console.log(prompt);
+      const resp = await axios.post('http://localhost:5000/user/chatbot', {
+        prompt: prompt, 
       });
 
       if (resp.status === 200) {
-        const responseData = await resp.text();
-        setResponse(responseData);
+        setResponse(resp.data.response);
       } else {
         console.error('Error:', resp.status);
       }
