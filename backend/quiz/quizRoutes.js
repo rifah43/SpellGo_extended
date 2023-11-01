@@ -86,7 +86,7 @@ router.post('/quiz/evaluate', authMiddleware.authenticate, async (req, res) => {
     let score = 0;
     let correct = 0;
     const results = [];
-    let select= null;
+    let select = null;
     for (let i = 0; i < questions.length; i++) {
       const question = questions[i];
       const selectedAnswerId = answers[i];
@@ -117,7 +117,7 @@ router.post('/quiz/evaluate', authMiddleware.authenticate, async (req, res) => {
       if (isCorrect) {
         correct++;
       }
-      select= selectedAnswer ? selectedAnswer.value : 'Not answered';
+      select = selectedAnswer ? selectedAnswer.value : 'Not answered';
       results.push({
         question: questionDocument.question,
         selected_answer: selectedAnswer ? selectedAnswer.value : 'Not answered',
@@ -126,7 +126,7 @@ router.post('/quiz/evaluate', authMiddleware.authenticate, async (req, res) => {
       });
     }
 
-    score = Math.ceil(10*(((300 - timeSpent) / 300)/2 + (correct/10)/2)); 
+    score = Math.ceil(10 * (((300 - timeSpent) / 300) / 2 + (correct / 10) / 2));
 
     const quiz = new Quiz({
       user: req._id,
@@ -144,40 +144,40 @@ router.post('/quiz/evaluate', authMiddleware.authenticate, async (req, res) => {
     // });
 
     const pdfDocument = new PDFDocument();
-    pdfDocument.pipe(fs.createWriteStream('quiz_result.pdf')); 
+    pdfDocument.pipe(fs.createWriteStream('quiz_result.pdf'));
 
-  //   pdfDocument.registerFont('customFont', './DaPandora-Regular.otf');
-  // pdfDocument.font('customFont')
+    //   pdfDocument.registerFont('customFont', './DaPandora-Regular.otf');
+    // pdfDocument.font('customFont')
     pdfDocument
-  .fontSize(20)
-  .text('Quiz Result', { align: 'center' })
-  .moveDown(1);
+      .fontSize(20)
+      .text('Quiz Result', { align: 'center' })
+      .moveDown(1);
 
-// Loop through the results
-results.forEach((result, index) => {
-  pdfDocument
-    .fontSize(14)
-    .text(`Question ${index + 1}: ${result.question}`)
-    .fontSize(12)
-    .text(`Selected Answer: ${result.selected_answer}`)
-    .fontSize(12)
-    .text(`Correct Answer: ${result.correct_answer_text}`)
-    .fontSize(12)
-    .text(`Result: ${result.correct_answer}`)
-    .moveDown(1);
-});
+    // Loop through the results
+    results.forEach((result, index) => {
+      pdfDocument
+        .fontSize(14)
+        .text(`Question ${index + 1}: ${result.question}`)
+        .fontSize(12)
+        .text(`Selected Answer: ${result.selected_answer}`)
+        .fontSize(12)
+        .text(`Correct Answer: ${result.correct_answer_text}`)
+        .fontSize(12)
+        .text(`Result: ${result.correct_answer}`)
+        .moveDown(1);
+    });
 
-pdfDocument.moveDown(2);
+    pdfDocument.moveDown(2);
 
-// Add a footer with the total score
-pdfDocument
-  .fontSize(16)
-  .text(`Total Score: ${score}`, { align: 'center' });
+    // Add a footer with the total score
+    pdfDocument
+      .fontSize(16)
+      .text(`Total Score: ${score}`, { align: 'center' });
 
-pdfDocument.end();
+    pdfDocument.end();
 
     const transporter = nodemailer.createTransport({
-      service: 'Gmail', 
+      service: 'Gmail',
       auth: {
         user: 'spl2bsse12@gmail.com',
         pass: process.env.PASS,

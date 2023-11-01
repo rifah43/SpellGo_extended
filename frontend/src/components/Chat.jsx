@@ -8,7 +8,6 @@ const Chat = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(prompt);
       const resp = await axios.post('http://localhost:5000/user/chatbot', {
         prompt: prompt, 
       });

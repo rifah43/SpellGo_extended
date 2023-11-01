@@ -8,6 +8,7 @@ import QuestionList from './QuestionList';
 import QuizComponent from './Quiz';
 import ProfileUpdate from './Profile';
 import Chat from './Chat';
+import Theme from './Theme';
 
 function Dashboard() {
   const [role, setRole] = useState(false);
@@ -41,6 +42,7 @@ function Dashboard() {
                 <Route path="/perform-quiz" element={<QuizComponent />} />
                 <Route path="/game" element={<GameComponent />} />
                 <Route path="/chatbot" element={<Chat />} />
+                {/* <Route path="/customThemeAdder" element={<Theme />} /> */}
               </>
             )}
             {!role && (

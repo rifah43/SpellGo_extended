@@ -32,6 +32,10 @@ function Navbar() {
               </li>
               <hr />
               <li className="dropdown-item">
+                <Link to="/dashboard/customThemeAdder">Theme</Link>
+              </li>
+              <hr />
+              <li className="dropdown-item">
                 <Link to="/dashboard/progress">Dashboard</Link>
               </li>
               <hr />
@@ -49,12 +53,12 @@ function Navbar() {
               <hr />
               {showProgressLink && (
                 <><li className="dropdown-item">
-                <Link to="/dashboard/progress">Progress</Link>
-              </li><hr />
-              <li className="dropdown-item">
-              <Link to="/dashboard/chatbot">Chatbot</Link>
-            </li></>
-                
+                  <Link to="/dashboard/progress">Progress</Link>
+                </li><hr />
+                  <li className="dropdown-item">
+                    <Link to="/dashboard/chatbot">Chatbot</Link>
+                  </li>
+                </>
               )}
             </ul>
           )}

@@ -17,13 +17,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    role:{
-      type: String,
-      required: true
+    role: {
+        type: String,
+        required: true
     },
     resetPasswordToken: {
         type: String,
         required: false
+    },
+    theme: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Theme' ,
+        required: true
     }
 });
 

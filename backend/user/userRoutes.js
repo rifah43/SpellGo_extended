@@ -1,16 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const User= require('./userModel.js');
+const User = require('./userModel.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const Theme = require('../customTheme/themeModel.js')
 require('dotenv').config();
 function sendResetEmail(email, resetToken) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail', 
+    service: 'gmail',
     auth: {
-      user: 'spl2bsse12@gmail.com', 
+      user: 'spl2bsse12@gmail.com',
       pass: process.env.PASS,
     },
   });
@@ -39,62 +40,72 @@ function generateResetToken() {
 
 
 router.post('/user/register', async (req, res) => {
-    try {
-        // const { firstname, lastname, email, password } = req.body;
-        const salt = await bcrypt.genSalt(10);
-        // console.log(salt);
-        const hashed = await bcrypt.hash(req.body.password, salt);
-        // console.log(hashed);
-        const user = new User({
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            email: req.body.email,
-            password: hashed,
-            role: "user"
-        });
-        // console.log(user);
+  try {
+    // const { firstname, lastname, email, password } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    // console.log(salt);
+    const hashed = await bcrypt.hash(req.body.password, salt);
+    // console.log(hashed);
 
-        const result = await user.save();
-        // console.log(result);
+    const newTheme = new Theme({
+      bgImagePath: '/path/to/theme/image.jpg',
+      textColor: '#000000', // Converts 'black' to '#000000'
+      buttonColor: '#808080', // Converts 'grey' to '#808080'
+    });
 
-        res.status(201).json({
-            message: 'Registration successful'
-        });
-    } catch (error) {
-        res.status(400).json({ message: 'Error: ' + error });
-    }
+    await newTheme.save()
+
+    const user = new User({
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email,
+      password: hashed,
+      role: "user",
+      theme: newTheme._id,
+    });
+    // console.log(user);
+
+    const result = await user.save();
+    // console.log(result);
+
+    res.status(201).json({
+      message: 'Registration successful'
+    });
+  } catch (error) {
+    res.status(400).json({ message: 'Error: ' + error });
+  }
 });
 
 router.post('/user/login', async (req, res) => {
-    try {
-        const user = await User.findOne({ email: req.body.email });
+  try {
+    const user = await User.findOne({ email: req.body.email });
 
-        if (!user) {
-            return res.status(404).json({
-                message: 'No user found'
-            });
-        }
-
-        if (!(await bcrypt.compare(req.body.password, user.password))) {
-            return res.status(400).json({
-                message: 'Incorrect password'
-            });
-        }
-
-        const accessToken = jwt.sign(user.toJSON(), 'secret', { expiresIn: '1h' });
-
-        res.json({
-            token: accessToken,
-            _id: user._id,
-            message: 'Login successful',
-            firstname: user.firstname,
-            lastname: user.lastname,
-            email: user.email,
-            role: user.role,
-        });
-    } catch (error) {
-        res.status(400).json({ message: 'Error: ' + error });
+    if (!user) {
+      return res.status(404).json({
+        message: 'No user found'
+      });
     }
+
+    if (!(await bcrypt.compare(req.body.password, user.password))) {
+      return res.status(400).json({
+        message: 'Incorrect password'
+      });
+    }
+
+    const accessToken = jwt.sign(user.toJSON(), 'secret', { expiresIn: '1h' });
+
+    res.json({
+      token: accessToken,
+      _id: user._id,
+      message: 'Login successful',
+      firstname: user.firstname,
+      lastname: user.lastname,
+      email: user.email,
+      role: user.role,
+    });
+  } catch (error) {
+    res.status(400).json({ message: 'Error: ' + error });
+  }
 });
 
 router.post('/user/forgot-password', async (req, res) => {
@@ -120,7 +131,7 @@ router.post('/user/forgot-password', async (req, res) => {
   }
 });
 
-  
+
 router.post('/user/reset-password', async (req, res) => {
   const { email, token, newPassword } = req.body;
   console.log(email, token, newPassword);
@@ -128,7 +139,7 @@ router.post('/user/reset-password', async (req, res) => {
   try {
     const user = await User.findOne({
       email,
-      resetPasswordToken: token, 
+      resetPasswordToken: token,
     });
 
     if (!user) {
@@ -168,7 +179,7 @@ router.post('/user/update-profile', async (req, res) => {
       else if (newpasswordMatch) {
         return res.status(400).json({ message: 'This password is existing.' });
       }
-      else{
+      else {
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(newPassword, salt);
         user.password = hashed;
