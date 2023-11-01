@@ -1,0 +1,107 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.back-link a {
+  font-size: large;
+  font-weight: bold;
+  text-decoration: none;
+  color: #ffa200;
+  transition: color 0.3s, transform 0.3s; /* Add transform transition for liveliness */
+}
+
+.back-link a:hover {
+  font-weight: bolder;
+  color: #00cd44;
+  transform: scale(1.1); /* Add a scale effect on hover to make it lively */
+}
+
+form {
+  margin-top: 20px;
+}
+
+#timer {
+  font-size: 36px; /* Increase font size for the digital clock effect */
+  margin-bottom: 20px;
+  /* color: #007BFF; */
+  font-family: 'Courier New', monospace; /* Use a monospaced font */
+  font-weight: bold;
+  background-color: #2e2e2ead; /* Dark background */
+  color: #ffae00; /* Bright green text color */
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+  letter-spacing: 4px; /* Ensure even spacing between characters */
+}
+
+.question-container {
+  max-height: 700px;
+  overflow-y: auto;
+}
+
+.question {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: transform 0.3s;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.question:hover {
+  transform: scale(1.02);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.question h3 {
+  font-size: 24px;
+  margin: 0;
+  color: #0e7600;
+}
+
+.question ol {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.question li {
+  margin-bottom: 10px;
+}
+
+input[type="radio"] {
+  margin-right: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #f763be;
+  color: #000000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s, transform 0.3s;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.235);
+  border: 1px solid #97005d;
+}
+
+button:hover {
+  background-color: #f40398;
+  color: #ffffff;
+}

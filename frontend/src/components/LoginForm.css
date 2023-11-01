@@ -1,0 +1,85 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: rgba(53, 23, 0, 0.637);
+  border-radius: 8px;
+  border: 1px solid #6889ffbe;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.301);
+  text-align: center;
+  animation: slideIn 0.5s ease-in-out;
+}
+
+@keyframes slideIn {
+  0% {
+      transform: translateY(50px);
+      opacity: 0;
+  }
+  100% {
+      transform: translateY(0);
+      opacity: 1;
+  }
+}
+
+.form-container h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #007bffaa;
+}
+
+.form-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 7px; 
+  border: 1px solid #000000;
+  background-color: rgba(53, 23, 0, 0.553);
+  border-radius: 4px;
+  transition: border-color 0.3s ease-in-out;
+  box-sizing: border-box; 
+}
+
+.form-container input:focus {
+  border-color: #007bffb1;
+}
+
+.form-container a {
+  text-decoration: none;
+  color: #ecf5ff;
+  font-size: 14px;
+  margin-top: 10px;
+  display: block;
+  transition: color 0.3s ease-in-out;
+}
+
+.form-container a:hover {
+  color: #ffff58;
+}
+
+.button-19 {
+  background-color: #f763be;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.button-19:hover {
+  background-color: #f40398;
+}
+
+.logo-container img{
+  width: 15%;
+  height: 15%;
+}

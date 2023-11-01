@@ -1,0 +1,87 @@
+/* Navbar.css */
+
+.icon {
+    color: #c72400; /* Replace with your desired color */
+    font-size: 45px; /* Set the font size as needed */
+  }
+
+.navbar {
+    font-size: x-large;
+    background-color: transparent; /* Set background to transparent */
+    color:#c72400;
+    padding: 20px;
+  }
+  hr{
+    border: 1px solid #c72400;
+  }
+  
+  .nav-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+  }
+  
+  .nav-item {
+    margin-right: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease; /* Add smooth transitions */
+  }
+  
+  .nav-item:hover {
+    color: #ff7f00; /* Change text color on hover */
+    transform: scale(1.1); /* Add a professional scaling animation */
+  }
+  
+  .nav-item span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .dropdown {
+    color: #ff7f00;
+    font-size: larger;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    list-style: none;
+    padding: 0;
+    display: none;
+    min-width: 150px;
+    z-index: 1;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top center;
+    transition: all 0.3s ease-in-out;
+    position: absolute;
+  }
+  
+  .dropdown-item {
+    margin-top: 10px;
+  }
+  
+  .nav-item:hover .dropdown {
+    color: #ff7f00;
+    display: block;
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  
+  .nav-item span::before {
+    content: '';
+    width: 100%;
+    height: 2px;
+    background-color: #fff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: bottom center;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .nav-item:hover span::before {
+    transform: scaleX(1);
+  }
+  

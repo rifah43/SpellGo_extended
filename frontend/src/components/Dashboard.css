@@ -1,0 +1,70 @@
+/* Dashboard.css */
+
+/* Position the Navbar on the left */
+.navbar {
+    position: fixed;
+    top: 15%;
+    left: 2%;
+    width: 10vw; /* Adjust the width as needed */
+    height: 70vh; /* Full height */
+  }
+  
+  /* Adjust the margin to create space between the Navbar and the content */
+  .dashboard-content {
+    position: absolute;
+    top: 20%;
+    left: 7%; /* Match the Navbar width */
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+  }
+  
+  .dashboard-title {
+    top: 2%;
+    color: #d59500d6;
+    font-size: 700%;
+    text-align: center;
+  }
+  
+  .nav-buttons-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+  .nav-button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #f763be;
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s, transform 0.3s;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.235);
+    border: 1px solid #97005d;
+  }
+  
+  .nav-button.active {
+    background-color: #f763be;
+    transform: scale(1.05);
+  }
+  
+  .nav-button:hover {
+    background-color: #f40398;
+    color: #ffffff;
+  }
+  
+  a {
+    color: #000000;
+    text-decoration: none; 
+  }
+  
+  a:hover {
+    color: #ffffff;
+  }
+  
