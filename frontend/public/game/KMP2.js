@@ -64,7 +64,6 @@ class KMP2{
                 console.log(prevJ+" "+i+" "+this.j);
 
                 if(i!=pre){
-                    this.rewind.reduceLive();
                     (new MessageBox({ctx:this.ctx,fontSize:15})).startTyping(window.hints.kmp.hint4);
                     return;
                 }
@@ -104,7 +103,7 @@ class KMP2{
             this.btnContainer.add(btn);
         }
         const btn=new Button({ctx:this.ctx,x:105*this.patternLen+this.ctx.offset2-55,y:config.height/2-90,btnName:"Reset", width:105,height:40}).createButtons();
-        btn.getByName("btn").on("pointerdown",()=>{
+        btn.getByName("btn").on("pointerdown",async ()=>{
             if(this.j==0){
                 this.ctx.tweens.add({
                     targets:this.textContainer,
@@ -120,11 +119,39 @@ class KMP2{
                 this.i++;
                 if(this.i==this.text.length){
                     this.reward = new Reward({ ctx: this.ctx, maxScore: 1000 });
-                        this.ctx.scene.start("gameSucceed", {
-                            reward: this.reward,
-                            todo: [
-                                { text: "You have done very well!", speed: window.speeds.normal }
-                            ]
+                    this.score = this.reward.totalScore;
+                    this.bestTime = this.reward.timeEfficiency;
+                    this.levelNo = this.levelName;
+
+                    try {
+                        console.log(this.levelNo, this.score, this.bestTime, this.reward);
+                        const response = await fetch('http://localhost:5000/game/rewards', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${token}`,
+                            },
+                            body: JSON.stringify({
+                                score: this.score,
+                                bestTime: this.bestTime,
+                                levelNo: this.levelNo,
+                            }),
+                        });
+
+                        if (response.ok) {
+                            const responseData = await response.json();
+                            console.log(responseData);
+                        } else {
+                            throw new Error('Error: ' + response.status);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                    this.ctx.scene.start("gameSucceed", {
+                        reward: this.reward,
+                        todo: [
+                            { text: "You have done very well!", speed: window.speeds.normal }
+                        ]
                     })
                 }
             }
@@ -154,7 +181,7 @@ class KMP2{
                     targets:this.match,
                     x:100*(this.j+1),
                     duration:500,
-                    onComplete:()=>{
+                    onComplete:async ()=>{
                         console.log(this.ctx.pt[this.j]+" "+this.text[this.i]);
                         this.i++;
                         this.j++;
@@ -162,32 +189,33 @@ class KMP2{
                             this.matchingDone=true;
                             this.reward = new Reward({ ctx: this.ctx, maxScore: 1000 });
                             this.score = this.reward.totalScore;
-                            this.bestTime = this.reward.timeEfficiency;
-                            this.levelNo = this.levelName;
-                    
-                            try {
-                            const response = fetch('http://localhost:5000/game/rewards', {
-                                method: 'POST',
-                                headers: {
-                                'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                score: this.score,
-                                bestTime: this.bestTime,
-                                levelNo: this.levelNo,
-                                })
-                            });
-                    
-                            if (response.ok) {
-                                const responseData = response.json();
-                                console.log(responseData);
-                            } else {
-                                throw new Error('Error: ' + response.status);
-                            }
-                            } catch (error) {
-                            console.error('Error:', error);
-                            }
+                                this.bestTime = this.reward.timeEfficiency;
+                                this.levelNo = this.levelName;
 
+                                try {
+                                    console.log(this.levelNo, this.score, this.bestTime, this.reward);
+                                    const response = await fetch('http://localhost:5000/game/rewards', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            Authorization: `Bearer ${token}`,
+                                        },
+                                        body: JSON.stringify({
+                                            score: this.score,
+                                            bestTime: this.bestTime,
+                                            levelNo: this.levelNo,
+                                        }),
+                                    });
+
+                                    if (response.ok) {
+                                        const responseData = await response.json();
+                                        console.log(responseData);
+                                    } else {
+                                        throw new Error('Error: ' + response.status);
+                                    }
+                                } catch (error) {
+                                    console.error('Error:', error);
+                                }
                             this.ctx.scene.start("gameSucceed", {
                                     reward: this.reward,
                                     todo: [
@@ -210,7 +238,6 @@ class KMP2{
                 })
             }
             else{
-                this.rewind.reduceLive();
                 (new MessageBox({ctx:this.ctx,fontSize:15})).startTyping(window.hints.kmp.hint6);
             }
             
@@ -218,7 +245,6 @@ class KMP2{
 
         this.prevBtn.getByName("btn").on("pointerdown",()=>{
             if(this.text[this.i]==this.ctx.pt[this.j]){
-                this.rewind.reduceLive();
                 (new MessageBox({ctx:this.ctx,fontSize:15})).startTyping(window.hints.kmp.hint5);
                 return;
             }

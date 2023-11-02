@@ -76,7 +76,6 @@ class KMP extends Phaser.Scene{
         this.ignoreBtn=(new Button({ctx:this,x:btnX,y:btnY, btnName:"Forward!"})).createButtons();
         this.ignoreBtn.getByName("btn").on("pointerdown",()=>{
             if(this.len>0||(this.pt[this.len]==this.pt[this.i] && this.i!=this.len)){
-                this.rewind.reduceLive();
                 (new MessageBox({ctx:this})).startTyping(window.hints.kmp.hint3);
                 return;
             }
@@ -89,7 +88,6 @@ class KMP extends Phaser.Scene{
         this.updateBtn=(new Button({ctx:this,x:btnX, y:btnY-55,btnName:"Update!",width:btnWidth})).createButtons();
         this.updateBtn.getByName("btn").on("pointerdown",()=>{
             if(this.i==0 || this.pt[this.len]!=this.pt[this.i]){
-                this.rewind.reduceLive();
                 (new MessageBox({ctx:this})).startTyping(window.hints.kmp.hint2);
                 return;
             }
@@ -104,7 +102,6 @@ class KMP extends Phaser.Scene{
         this.backBtn=(new Button({ctx:this,x:btnX+btnWidth/2,y:btnY, btnName:"Backward!"})).createButtons();
         this.backBtn.getByName("btn").on("pointerdown",()=>{
             if(this.len==0 || (this.pt[this.len]==this.pt[this.i])){
-                this.rewind.reduceLive();
                 (new MessageBox({ctx:this})).startTyping(window.hints.kmp.hint1);
                 return;
             }
@@ -185,7 +182,7 @@ class KMP extends Phaser.Scene{
         this.cameras.main.setBackgroundColor('#86CF74'); 
 
         this.event=new UserEventHandler({ctx:this, fontSize:"15px"})
-        this.event.createRestartBtn(160,10);
+        this.event.init();
 
         this.steps=20;
         this.rewind=new Rewind({ctx:this})

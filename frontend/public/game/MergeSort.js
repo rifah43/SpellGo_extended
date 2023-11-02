@@ -91,7 +91,7 @@ class MergeSort extends Phaser.Scene {
         this.add.image(config.width/2-40,config.height - this.startFrom+this.nodeHeight-10,'timber');
 
         this.event=new UserEventHandler({ctx:this, fontSize:"15px"})
-        this.event.createRestartBtn(160,10);
+        this.event.init();
         this.startSorting();
     }
     async startSorting(){
@@ -103,28 +103,29 @@ class MergeSort extends Phaser.Scene {
         this.levelNo = this.levelName;
 
         try {
-        const response = fetch('http://localhost:5000/game/rewards', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            score: this.score,
-            bestTime: this.bestTime,
-            levelNo: this.levelNo,
-            })
-        });
+            console.log(this.levelNo, this.score, this.bestTime, this.reward);
+            const response = await fetch('http://localhost:5000/game/rewards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    score: this.score,
+                    bestTime: this.bestTime,
+                    levelNo: this.levelNo,
+                }),
+            });
 
-        if (response.ok) {
-            const responseData = response.json();
-            console.log(responseData);
-        } else {
-            throw new Error('Error: ' + response.status);
-        }
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData);
+            } else {
+                throw new Error('Error: ' + response.status);
+            }
         } catch (error) {
-        console.error('Error:', error);
+            console.error('Error:', error);
         }
-
         this.scene.start("gameSucceed", {
             reward: this.reward,
             todo: [

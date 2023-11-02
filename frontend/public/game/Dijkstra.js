@@ -53,7 +53,7 @@ class Dijkstra extends Phaser.Scene{
         ];
         this.costs=[0];
         this.cutScenePlaying=false;
-        
+
         this.bridgeMap={
             "0,1":{
                 cost:2,
@@ -409,7 +409,7 @@ class Dijkstra extends Phaser.Scene{
         (new MessageBox({ ctx: this })).startTyping(window.guidance.dijkstra.minSrc);
 
         this.countdown=new CountdownController({ctx:this,duration:75000,callback: () => {
-            this.scene.start("game_over")
+            this.scene.start('game_over',{key:'dijkstra'});
         }});
         this.countdown.start();
 
@@ -418,12 +418,12 @@ class Dijkstra extends Phaser.Scene{
             }
         });
         this.event=new UserEventHandler({ctx:this, fontSize:"15px"})
-        this.event.createRestartBtn(160,10);
+        this.event.init();
 
         (new MessageBox({ctx:this})).startTyping(window.guidance.dijkstra.minSrc);
         
     }
-    update(){
+    async update(){
         if(this.cityDefeated==this.map.length){
             this.scene.pause();
             // pause the timer, player won!!!!!!
@@ -431,35 +431,36 @@ class Dijkstra extends Phaser.Scene{
             this.score = this.reward.totalScore;
             this.bestTime = this.reward.timeEfficiency;
             this.levelNo = this.levelName;
-    
+
             try {
-            const response = fetch('http://localhost:5000/game/rewards', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                score: this.score,
-                bestTime: this.bestTime,
-                levelNo: this.levelNo,
-                })
-            });
-    
-            if (response.ok) {
-                const responseData = response.json();
-                console.log(responseData);
-            } else {
-                throw new Error('Error: ' + response.status);
-            }
+                console.log(this.levelNo, this.score, this.bestTime, this.reward);
+                const response = await fetch('http://localhost:5000/game/rewards', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        score: this.score,
+                        bestTime: this.bestTime,
+                        levelNo: this.levelNo,
+                    }),
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log(responseData);
+                } else {
+                    throw new Error('Error: ' + response.status);
+                }
             } catch (error) {
-            console.error('Error:', error);
+                console.error('Error:', error);
             }
-            
             this.scene.start("gameSucceed", {
                 reward: this.reward,
                 todo: [
                     { text: "NEXT TASK: ", speed: window.speeds.slow },
-                    { text: "Go into the garden", speed: window.speeds.normal },
+                    { text: "MergeSort", speed: window.speeds.normal },
                     { text: "...", speed: window.speeds.slow }
                 ],
                 key:"dijkstra"

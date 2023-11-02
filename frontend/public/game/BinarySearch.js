@@ -129,7 +129,7 @@ class BinarySearch extends Phaser.Scene {
     create() {
         this.createLibrary();
         this.event=new UserEventHandler({ctx:this, fontColor:"#ffffff"})
-        this.event.createRestartBtn(160,10);
+        this.event.init();
 
         this.left = this.createButton(config.width / 2 - 25, config.height - 80, "left-btn");
         this.right = this.createButton(this.left.x + this.left.displayWidth + 10, config.height - 80, "right-btn");
@@ -223,7 +223,7 @@ class BinarySearch extends Phaser.Scene {
     getMid() {
         return Math.floor((this.leftPoint + this.rightPoint) / 2) - 1;
     }
-    async update() {
+    update() {
         this.countdown.update();
         if (!this.midChosen) {
             this.countdown.pause();
@@ -248,7 +248,7 @@ class BinarySearch extends Phaser.Scene {
                         targets: [this.papers[mid].getByName("potion-name")],
                         alpha: 1,
                         duration: 1000,
-                        onComplete: () => {
+                        onComplete: async () => {
                             if (this.leftPoint == this.rightPoint) {
                                 this.scene.pause();
                                 // pause the timer, player won!!!!!!
@@ -256,30 +256,31 @@ class BinarySearch extends Phaser.Scene {
                                 this.score = this.reward.totalScore;
                                 this.bestTime = this.reward.timeEfficiency;
                                 this.levelNo = this.levelName;
-                        
-                                try {
-                                const response = fetch('http://localhost:5000/game/rewards', {
-                                    method: 'POST',
-                                    headers: {
-                                    'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                    score: this.score,
-                                    bestTime: this.bestTime,
-                                    levelNo: this.levelNo,
-                                    })
-                                });
-                        
-                                if (response.ok) {
-                                    const responseData = response.json();
-                                    console.log(responseData);
-                                } else {
-                                    throw new Error('Error: ' + response.status);
-                                }
-                                } catch (error) {
-                                console.error('Error:', error);
-                                }
 
+                                try {
+                                    console.log(this.levelNo, this.score, this.bestTime, this.reward);
+                                    const response = await fetch('http://localhost:5000/game/rewards', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            Authorization: `Bearer ${token}`,
+                                        },
+                                        body: JSON.stringify({
+                                            score: this.score,
+                                            bestTime: this.bestTime,
+                                            levelNo: this.levelNo,
+                                        }),
+                                    });
+
+                                    if (response.ok) {
+                                        const responseData = await response.json();
+                                        console.log(responseData);
+                                    } else {
+                                        throw new Error('Error: ' + response.status);
+                                    }
+                                } catch (error) {
+                                    console.error('Error:', error);
+                                }
                                 this.scene.start("gameSucceed", {
                                     reward: this.reward,
                                     todo: [

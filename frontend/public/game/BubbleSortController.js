@@ -1,178 +1,176 @@
 class BubbleSortController {
-    constructor(ctx, levelName) {
-      this.live = 3;
-      this.cutScenePlaying = true;
-      this.ctx = ctx;
-      this.errMessage = "";
-      this.swapDone = false;
-      this.skipDone = false;
-      this.levelName = levelName;
+    constructor(ctx) {
+        
+        this.live= 3
+        this.cutScenePlaying = true;
+        this.ctx = ctx;
+        this.errMessage="";
+        this.swapDone=false;
+        this.skipDone=false;
+        this.levelName = levelName;
     }
-  
+
     perform(callback) {
-      this.cutScenePlaying = true;
-      callback();
+        this.cutScenePlaying = true;
+        callback();
     }
-  
-    swapping() {
-      this.swap();
-      if (this.isSwapRight()) {
-        this.switching();
-      }
+    swapping(){
+        this.swap();
+        if(this.isSwapRight()){
+            this.switching();
+        }
     }
-  
     swap() {
-      return new Promise((resolve) => {
-        let rect1 = this.ctx.stairs[this.ctx.currentLight];
-        let rect2 = this.ctx.stairs[this.ctx.currentLight + 1];
-        [this.ctx.stairs[this.ctx.currentLight], this.ctx.stairs[this.ctx.currentLight + 1]] = [this.ctx.stairs[this.ctx.currentLight + 1], this.ctx.stairs[this.ctx.currentLight]];
-        let x1 = rect1.x;
-        let x2 = rect2.x;
-        this.hasSwapped = true;
-        this.ctx.tweens.add({
-          targets: rect2,
-          x: x1,
-          ease: "Linear",
-          duration: 1000
-        });
-        this.ctx.tweens.add({
-          targets: rect1,
-          x: x2,
-          ease: "Linear",
-          duration: 1000,
-          onComplete: () => {
-            resolve();
-          }
-        });
-      });
+        return new Promise(resolve=>{
+            let rect1 = this.ctx.stairs[this.ctx.currentLight];
+            let rect2 = this.ctx.stairs[this.ctx.currentLight + 1];
+            [this.ctx.stairs[this.ctx.currentLight], this.ctx.stairs[this.ctx.currentLight + 1]] = [this.ctx.stairs[this.ctx.currentLight + 1], this.ctx.stairs[this.ctx.currentLight]];
+            let x1 = rect1.x;
+            let x2 = rect2.x;
+            this.hasSwapped=true;
+            this.ctx.tweens.add({
+                targets: rect2,
+                x: x1,
+                ease: "Linear",
+                duration: 1000
+            });
+            this.ctx.tweens.add({
+                targets: rect1,
+                x: x2,
+                ease: "Linear",
+                duration: 1000,
+                onComplete: () => {
+                    resolve();
+                }
+            });
+        })
     }
-  
     async switching() {
-      if (!this.isSkipRight()) {
-        return;
-      }
-  
-      const prevLight = this.ctx.currentLight;
-      this.ctx.light[prevLight].setTexture("lightOff");
-  
-      if (this.ctx.numberOfLights == 1) {
-        this.ctx.scene.pause();
-        // pause the timer, player won!!!!!!
-        this.reward = new Reward({ ctx: this.ctx, maxScore: 1000 });
-        this.score = this.reward.totalScore;
-        this.bestTime = this.reward.timeEfficiency;
-        this.levelNo = this.levelName;
+        if (!this.isSkipRight()) {
+            return;
+        }
+        const prevLight = this.ctx.currentLight;
+        this.ctx.light[prevLight].setTexture("lightOff");
 
-        try {
-        const response = fetch('http://localhost:5000/game/rewards', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            score: this.score,
-            bestTime: this.bestTime,
-            levelNo: this.levelNo,
+        if (this.ctx.numberOfLights == 1) {
+            this.ctx.scene.pause();
+            // pause the timer, player won!!!!!!
+            this.reward=new Reward({ctx:this.ctx,maxScore:1000});
+            console.log(this.ctx.levelName)
+            this.score = this.reward.totalScore;
+            this.bestTime = this.reward.timeEfficiency;
+            this.levelNo = this.levelName;
+
+            try {
+                console.log(this.levelNo, this.score, this.bestTime, this.reward);
+                const response = await fetch('http://localhost:5000/game/rewards', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        score: this.score,
+                        bestTime: this.bestTime,
+                        levelNo: this.levelNo,
+                    }),
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log(responseData);
+                } else {
+                    throw new Error('Error: ' + response.status);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+
+            this.ctx.scene.start("gameSucceed",{
+                    reward:this.reward,
+                    todo:[
+                        {text:"NEXT TASK: ", speed:window.speeds.slow},
+                        {text:"Find the potion book in the library",speed:window.speeds.normal},
+                        {text:"...",speed:window.speeds.slow},
+                        {text:"See you until then!", speed:window.speeds.normal}
+                    ],
+                    key:"bubbleSort"
             })
-        });
+            return;
+        }
 
-        if (response.ok) {
-            const responseData = response.json();
-            console.log(responseData);
-        } else {
-            throw new Error('Error: ' + response.status);
+        this.ctx.currentLight = (prevLight + 1) % this.ctx.numberOfLights;
+        this.ctx.light[this.ctx.currentLight].setTexture("lightOn");
+
+        if (this.ctx.currentLight == 0)
+            this.ctx.numberOfLights--;
+        
+        this.guiding();
+    }
+
+    getHeight(){
+        const h1=this.ctx.stairs[this.ctx.currentLight].getAt(0).height;
+        const h2=this.ctx.stairs[this.ctx.currentLight+1].getAt(0).height;
+
+        return [h1,h2]
+    }
+
+    async guiding(){
+        var [rect1H ,rect2H]=this.getHeight();
+
+        if(rect1H>rect2H && !this.swapDone){
+            this.swapDone=true;
+            this.messageBox = new MessageBox({ctx:this.ctx});
+            this.ctx.countdown.pause();
+            await this.messageBox.startTyping(window.guidance.bubbleSort.swap);
+            this.ctx.countdown.resume();
         }
-        } catch (error) {
-        console.error('Error:', error);
+        else if(rect1H<=rect2H && !this.skipDone){
+            this.skipDone=true;
+            this.messageBox = new MessageBox({ctx:this.ctx});
+            await this.messageBox.startTyping(window.guidance.bubbleSort.skip);
         }
-  
-        this.ctx.scene.start("gameSucceed", {
-          reward: this.reward,
-          todo: [
-            { text: "NEXT TASK: ", speed: window.speeds.slow },
-            { text: "Find the potion book in the library", speed: window.speeds.normal },
-            { text: "...", speed: window.speeds.slow },
-            { text: "See you until then!", speed: window.speeds.normal }
-          ],
-          key: "bubbleSort"
-        });
-        return;
-      }
-  
-      this.ctx.currentLight = (prevLight + 1) % this.ctx.numberOfLights;
-      this.ctx.light[this.ctx.currentLight].setTexture("lightOn");
-  
-      if (this.ctx.currentLight == 0)
-        this.ctx.numberOfLights--;
-  
-      await this.guiding();
+        this.cutScenePlaying=false;
     }
-  
-    getHeight() {
-      return [this.ctx.stairs[this.ctx.currentLight].height, this.ctx.stairs[this.ctx.currentLight + 1].height];
+    
+    isSkipRight(){
+        var [rect1H ,rect2H]=this.getHeight();
+        if(rect1H<=rect2H){
+            return true;
+        }
+        else{
+            this.errMessage=window.hints.bubbleSort.skipErr;
+            this.skipRewind();
+            return false;
+        }
     }
-  
-    async guiding() {
-      var [rect1H, rect2H] = this.getHeight();
-  
-      if (rect1H > rect2H && !this.swapDone) {
-        this.swapDone = true;
-        this.messageBox = new MessageBox({ ctx: this.ctx });
-        this.ctx.countdown.pause();
-        await this.messageBox.startTyping(window.guidance.bubbleSort.swap);
-        this.ctx.countdown.resume();
-      } else if (rect1H <= rect2H && !this.skipDone) {
-        this.skipDone = true;
-        this.messageBox = new MessageBox({ ctx: this.ctx });
-        await this.messageBox.startTyping(window.guidance.bubbleSort.skip);
-      }
-      this.cutScenePlaying = false;
+
+    isSwapRight(){
+        var [rect1H ,rect2H]=this.getHeight();
+        if(rect1H<rect2H){
+            this.switching();
+            return true;
+        }
+        else{
+            if(rect1H>rect2H)this.errMessage=window.hints.bubbleSort.swapErr;
+            else this.errMessage=window.hints.bubbleSort.equalErr;
+            this.swapRewind();
+            return false;
+        }
     }
-  
-    isSkipRight() {
-      var [rect1H, rect2H] = this.getHeight();
-      if (rect1H <= rect2H) {
-        return true;
-      } else {
-        this.errMessage = window.hints.bubbleSort.skipErr;
-        this.skipRewind();
-        return false;
-      }
+    skipRewind(){
+        this.rewind().then(()=>{this.cutScenePlaying=false})
     }
-  
-    isSwapRight() {
-      var [rect1H, rect2H] = this.getHeight();
-      if (rect1H < rect2H) {
-        this.switching();
-        return true;
-      } else {
-        if (rect1H > rect2H) this.errMessage = window.hints.bubbleSort.swapErr;
-        else this.errMessage = window.hints.bubbleSort.equalErr;
-        this.swapRewind();
-        return false;
-      }
+    swapRewind(){
+        this.rewind().then(()=>{this.swap().then(()=>{this.cutScenePlaying=false})})
     }
-  
-    skipRewind() {
-      this.rewind().then(() => {
-        this.cutScenePlaying = false;
-      });
+    async rewind(){
+        if(!this.ctx.rewind.reduceLive()){
+            this.ctx.handleLevelCompletion();
+        }
+        let response = new MessageBox({ctx:this.ctx});
+        await response.startTyping(this.errMessage);
     }
-  
-    swapRewind() {
-      this.rewind().then(() => {
-        this.swap().then(() => {
-          this.cutScenePlaying = false;
-        });
-      });
-    }
-  
-    async rewind() {
-      if (!this.ctx.rewind.reduceLive()) {
-        this.ctx.handleLevelCompletion();
-      }
-      let response = new MessageBox({ ctx: this.ctx });
-      await response.startTyping(this.errMessage);
-    }
-  }
-  
+    
+    
+}
