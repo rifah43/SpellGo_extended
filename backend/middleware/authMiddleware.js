@@ -5,7 +5,6 @@ module.exports.authenticate= async(req, res, next)=>{
     try{
         const token = authorization.split(' ')[1];
         const decoded = jwt.verify(token, "secret");
-        // console.log(decoded);
         const {_id, email, firstname, lastname, role, theme} = decoded;
         req._id= _id;
         req.email = email;

@@ -7,18 +7,15 @@ const authMiddleware = require('../middleware/authMiddleware.js');
 
 router.post('/game/rewards', authMiddleware.authenticate, async (req, res) => {
   try {
-    // console.log(req.body);
+    console.log(req);
     const { score, bestTime, levelNo } = req.body;
     const userId = req._id; 
-    console.log(score, bestTime, levelNo);
-``
+
     const user = await User.findOne({ _id: userId });
-    console.log(req._id);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
     const level = await Level.findOne({ level_no: levelNo });
-    console.log(level);
     if (!level) {
       return res.status(404).json({ error: 'Level not found' });
     }
@@ -31,6 +28,7 @@ router.post('/game/rewards', authMiddleware.authenticate, async (req, res) => {
         user_id: user._id,
         best_time: bestTime,
         best_score: score,
+        is_complete: true,
       });
       level.is_complete = true;
     } else {
@@ -41,6 +39,7 @@ router.post('/game/rewards', authMiddleware.authenticate, async (req, res) => {
             progress.best_score = score;
         }
     }
+    await level.save();
     await progress.save();
 
     res.status(201).json({ message: 'Reward saved successfully' });
