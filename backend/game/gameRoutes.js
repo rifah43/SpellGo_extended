@@ -9,7 +9,7 @@ router.post('/game/rewards', authMiddleware.authenticate, async (req, res) => {
   try {
     console.log(req);
     const { score, bestTime, levelNo } = req.body;
-    const userId = req._id; 
+    const userId = req._id;
 
     const user = await User.findOne({ _id: userId });
     if (!user) {
@@ -32,12 +32,12 @@ router.post('/game/rewards', authMiddleware.authenticate, async (req, res) => {
       });
       level.is_complete = true;
     } else {
-        if (bestTime < progress.best_time) {
-            progress.best_time = bestTime;
-        }
-        if (score > progress.best_score) {
-            progress.best_score = score;
-        }
+      if (bestTime < progress.best_time) {
+        progress.best_time = bestTime;
+      }
+      if (score > progress.best_score) {
+        progress.best_score = score;
+      }
     }
     await level.save();
     await progress.save();
@@ -50,15 +50,42 @@ router.post('/game/rewards', authMiddleware.authenticate, async (req, res) => {
 });
 
 router.post('/add/levels', async (req, res) => {
-    try {
-      const { algorithm_name, level_no } = req.body;
-      const level = new Level({ algorithm_name, level_no });
-      await level.save();
-      res.status(201).json({ message: 'Level added successfully' });
-    } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ message: 'Failed to add a new level' });
+  try {
+    const { algorithm_name, level_no } = req.body;
+    const level = new Level({ algorithm_name, level_no });
+    await level.save();
+    res.status(201).json({ message: 'Level added successfully' });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Failed to add a new level' });
+  }
+});
+
+router.get('/progress/reports', authMiddleware.authenticate, async (req, res) => {
+  try {
+    const userId = req._id;
+    const progressReports = await Progress.find({ user_id: userId });
+    if (!progressReports) {
+      return res.status(404).json({ error: 'Progress Reports not found' });
     }
-  });
+    res.status(201).json({ reports: progressReports });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Failed to get progress reports' });
+  }
+});
+
+router.get('/level/info', authMiddleware.authenticate, async (req, res) => {
+  try {
+    const levelInfo = await Level.find();
+    if (!levelInfo) {
+      return res.status(404).json({ error: 'Level Info not found' });
+    }
+    res.status(201).json({ levelInfo: levelInfo });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Failed to get level info' });
+  }
+});
 
 module.exports = router;
