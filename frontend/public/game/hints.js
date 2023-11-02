@@ -8,10 +8,10 @@ window.guidance={
     bubbleSort:{
         swap:[
             
-            {text:"If you see the first stair strictly larger than the second one, then swap. Press 'S' to swap",speed:window.speeds.normal}
+            {text:"If you see the first stair strictly larger than the second one, then swap",speed:window.speeds.normal}
         ],
         skip:[
-            {text:"If you see the first stair smaller than the second one, then skip. Press spacebar to skip",speed:window.speeds.normal}
+            {text:"If you see the first stair samller than the second one, then skip",speed:window.speeds.normal}
             
         ]
     },
@@ -77,12 +77,12 @@ window.guidance={
 window.hints = {
     bubbleSort: {
         swapErr: [
-            {text: "Oh no! Magic power was overused while the first stair swapped the second stair!",speed: window.speeds.fast},
+            {text: "Oh no! Magic power was overused while the first stairo swapped the second stairo!",speed: window.speeds.fast},
             {text:"What was wrong?", speed: window.speeds.slow},
             {text:"Better time travel back and fix my mistake!",speed: window.speeds.normal}
         ],
         skipErr: [
-            {text:"Looks like the the first stair was larger than the second one.", speed:window.speeds.normal},
+            {text:"I must forgot something", speed:window.speeds.normal},
             {text:"...",speed:window.speeds.pause},
             {text:"I should think again.", speed: window.speeds.normal}
         ],

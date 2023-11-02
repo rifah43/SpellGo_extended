@@ -10,10 +10,9 @@ class GameSucceed extends Phaser.Scene{
         this.coinAmount=data.reward.totalScore;
         this.todo=data.todo;
         this.scene.remove(data.key);
-        console.log(data.key);
     }
     preload(){
-        this.load.spritesheet("coin","images/coin.png",{
+        this.load.spritesheet("coin","./images/coin.png",{
             frameWidth:64,
             frameHeight:64
         });

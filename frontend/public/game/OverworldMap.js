@@ -20,15 +20,15 @@ class OverworldMap {
     const collision=config.collisions.coordinates||[];
     const denotation=config.collisions.denotation;
     const length=collision.length;
-    for (let i = 0; i < length; i += 70) {
-      const subset = collision.slice(i, i + 70);
+    for (let i = 0; i < length; i += 150) {
+      const subset = collision.slice(i, i + 150);
       collisionMap.push(subset);
     }
 
     for(let i=0;i<collisionMap.length;i++){
       for(let j=0;j<collisionMap[i].length;j++){
         if(collisionMap[i][j]==denotation){
-          config.walls[utils.asGridCoord(j+1,i+1)]=true;
+          config.walls[utils.asGridCoord(j,i)]=true;
         }
       }
     }
@@ -145,25 +145,38 @@ class OverworldMap {
 }
 window.OverworldMaps = {
   DemoRoom: {
-    lowerSrc: "images/gameworld.png",
-    upperSrc: "images/gameworld_upper.png",
+    lowerSrc: "./images/gameworld.png",
+    upperSrc: "./images/gameworld_upper.png",
     bubbleSort:false,
     gameObjects: {
       hero: new Person({
         isPlayerControlled: true,
-        x: utils.withGrid(98),
-        y: utils.withGrid(62),
+        x: utils.withGrid(62),
+        y: utils.withGrid(80),
         viewSize:48
       }),
       npcA: new Person({
         x: utils.withGrid(60),
         y: utils.withGrid(78),
-        src: "images/characters/people/npc1.png",
+        src: "./images/characters/people/npc1.png",
         viewSize:48,
         talking: [
           {
             events: [
-              { type: "textMessage", text: "Sort the stairs to go into the library", faceHero: "npcA" },
+              { 
+                type: "textMessage", 
+                faceHero: "npcA",
+                text:[
+                  {
+                    string: "Sort the stairs to go into the library!",
+                    speed:window.speeds.fast
+                  },
+                  // {
+                  //   string: "Sort the stairs to go into the library At elementum eu facilisis sed odio. Nec tincidunt praesent semper feugiat nibh sed pulvinar proin gravida. Pellentesque diam volutpat commodo sed",
+                  //   speed:window.speeds.fast
+                  // }
+                ]
+              },
             ]
           }
         ]
@@ -171,7 +184,7 @@ window.OverworldMaps = {
       npcB: new Person({
         x: utils.withGrid(97),
         y: utils.withGrid(62),
-        src: "images/characters/people/npc2.png",
+        src: "./images/characters/people/npc2.png",
         viewSize:48,
         introDone:"complete",
         talking:[
@@ -179,7 +192,7 @@ window.OverworldMaps = {
           {}:
           {
             events:[
-              {type:"textMessage",text:"You have to reduce the size of your data. Nowadays much data cannot be transmittted into the portal.",faceHero:"npcB"},
+              {type:"textMessage",text:"You have to zip your data. Nowadays much data cannot be transmittted into the portal.",faceHero:"npcB"},
             ]
           }
         ],
@@ -188,7 +201,7 @@ window.OverworldMaps = {
       villageGate:new GameObject({
         x:utils.withGrid(86),
         y:utils.withGrid(93),
-        src: "images/VillageGate.png",
+        src: "./images/VillageGate.png",
         shouldMount:"unmount",
         frameSize:64,
         animations:{
@@ -202,7 +215,7 @@ window.OverworldMaps = {
       libraryGate: new GameObject({
         x:utils.withGrid(64),
         y:utils.withGrid(73),
-        src:"images/libraryGate.png",
+        src:"./images/libraryGate.png",
         shouldMount:"unmount",
         frameSize:64,
         animations:{
@@ -215,7 +228,7 @@ window.OverworldMaps = {
       greenhouseGate: new GameObject({
         x:utils.withGrid(69.5),
         y:utils.withGrid(46),
-        src:"images/greenhouseGate.png",
+        src:"./images/greenhouseGate.png",
         shouldMount:"unmount",
         frameSize:32,
         animations:{
@@ -230,7 +243,7 @@ window.OverworldMaps = {
       kmpLantern:utils.getLantern(93,35)
 
     },
-    collisions:{denotation:7946,coordinates:null},
+    collisions:{denotation:7946,coordinates:gameworldCollision},
     walls:[],
     cutsceneSpaces: {
       [utils.asGridCoord(63,80)]: [

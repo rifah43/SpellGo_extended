@@ -13,7 +13,7 @@ class GameObject {
     this.currentAnimation=config.currentAnimation;
     this.sprite = new Sprite({
       gameObject: this,
-      src: config.src || "images/characters/people/hero.png",
+      src: config.src || "./images/characters/people/hero.png",
     });
     
 

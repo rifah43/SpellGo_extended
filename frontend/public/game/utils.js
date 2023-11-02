@@ -52,7 +52,7 @@ const utils = {
     return new GameObject({
       x:utils.withGrid(x),
       y:utils.withGrid(y),
-      src:"images/lantern.png",
+      src:"./images/lantern.png",
       shouldMount:"unmount",
       frameSize:48,
       animations:{
