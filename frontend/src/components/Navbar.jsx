@@ -34,10 +34,10 @@ function Navbar() {
                 <Link to="/dashboard/progress">Home</Link>
               </li>
               <hr />
-              <li className="dropdown-item">
+              {/* <li className="dropdown-item">
                 <Link to="/dashboard/customThemeAdder">Theme</Link>
               </li>
-              <hr />
+              <hr /> */}
               <li className="dropdown-item">
                 <Link to="/dashboard/progress">Dashboard</Link>
               </li>

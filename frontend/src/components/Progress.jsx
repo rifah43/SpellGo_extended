@@ -44,8 +44,6 @@ const Progress = () => {
       .catch((error) => console.error(error));
   }, []);
 
-  console.log(completedLevels, levels);
-
   const sum = 300; // Set your hardcoded points here
   const loadingPercentage = (completedLevels.length / levels.length) * 100; // Set the loading percentage you want to display
 
