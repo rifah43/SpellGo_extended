@@ -73,7 +73,7 @@ class BubbleSort extends Phaser.Scene {
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.event=new UserEventHandler({ctx:this})
         this.event.createRestartBtn(config.width-70,config.height-40);
-        this.controller = new BubbleSortController(this);
+        this.controller = new BubbleSortController(this, this.levelName);
         this.controller.guiding();
     }
     

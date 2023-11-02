@@ -429,35 +429,32 @@ class Dijkstra extends Phaser.Scene{
             // pause the timer, player won!!!!!!
             this.reward = new Reward({ ctx: this, maxScore: 3000 });
             this.score = this.reward.totalScore;
-        this.bestTime = this.reward.timeEfficiency;
-        this.levelId = this.levelName;
-  
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        // const storedCsrfToken = this.getStoredCsrfToken(); // Modify this line to call the function
-        console.log(csrfToken);
-        try {
-          const response = fetch('/store', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': csrfToken
-            },
-            body: JSON.stringify({
-              score: this.score,
-              bestTime: this.bestTime,
-              levelId: this.levelId
-            })
-          });
-  
-          if (response.ok) {
-            const responseData = response.json();
-            console.log(responseData);
-          } else {
-            throw new Error('Error: ' + response.status);
-          }
-        } catch (error) {
-          console.error('Error:', error);
-        }
+            this.bestTime = this.reward.timeEfficiency;
+            this.levelNo = this.levelName;
+    
+            try {
+            const response = fetch('http://localhost:5000/game/rewards', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                score: this.score,
+                bestTime: this.bestTime,
+                levelNo: this.levelNo,
+                })
+            });
+    
+            if (response.ok) {
+                const responseData = response.json();
+                console.log(responseData);
+            } else {
+                throw new Error('Error: ' + response.status);
+            }
+            } catch (error) {
+            console.error('Error:', error);
+            }
+            
             this.scene.start("gameSucceed", {
                 reward: this.reward,
                 todo: [

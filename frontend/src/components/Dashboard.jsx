@@ -9,6 +9,7 @@ import QuizComponent from './Quiz';
 import ProfileUpdate from './Profile';
 import Chat from './Chat';
 import Theme from './Theme';
+import LevelForm from './AddLevel';
 
 function Dashboard() {
   const [role, setRole] = useState(false);
@@ -28,25 +29,25 @@ function Dashboard() {
 
   return (
     <div>
-      {/* <h1 className="dashboard-title">Welcome to the Dashboard</h1> */}
       <Navbar />
       <div className="dashboard">
-      
         <div className="dashboard-content">
-          
           <Routes>
-          <Route path="/profile-edit" element={<ProfileUpdate />} />
+            <Route path="/profile-edit" element={<ProfileUpdate />} />
             {role && (
               <>
                 <Route path="/progress" element={<Progress />} />
                 <Route path="/perform-quiz" element={<QuizComponent />} />
                 <Route path="/game" element={<GameComponent />} />
                 <Route path="/chatbot" element={<Chat />} />
-                {/* <Route path="/customThemeAdder" element={<Theme />} /> */}
+                <Route path="/customThemeAdder" element={<Theme />} />
               </>
             )}
             {!role && (
-              <Route path="/quiz" element={<QuestionList />} />
+              <>
+                <Route path="/quiz" element={<QuestionList />} />
+                <Route path="/add-level" element={<LevelForm />} />
+              </>
             )}
           </Routes>
         </div>

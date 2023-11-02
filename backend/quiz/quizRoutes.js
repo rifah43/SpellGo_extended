@@ -5,6 +5,7 @@ const Quiz = require('./quizModel.js');
 const authMiddleware = require('../middleware/authMiddleware.js');
 const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
+const Level = require('../game/levelModel.js');
 const fs = require('fs');
 require('dotenv').config();
 
@@ -35,7 +36,7 @@ router.delete('/quiz/questions/:id', authMiddleware.authenticate, async (req, re
 
 router.post('/quiz/questions/add', authMiddleware.authenticate, async (req, res) => {
   try {
-    const { question, options } = req.body;
+    const { question, options, algorithm } = req.body;
     const answer = options.map((option) => {
       return {
         isCorrect: option.isCorrect,
@@ -45,6 +46,7 @@ router.post('/quiz/questions/add', authMiddleware.authenticate, async (req, res)
     const newQuestion = new Question({
       question: question,
       answers: answer,
+      algorithm_name: algorithm,
     });
 
     await newQuestion.save();
@@ -58,7 +60,14 @@ router.post('/quiz/questions/add', authMiddleware.authenticate, async (req, res)
 
 router.get('/quiz/quiz', authMiddleware.authenticate, async (req, res) => {
   try {
-    const randomQuestions = await Question.aggregate([{ $sample: { size: 10 } }]);
+    const completedLevels = await Level.find({ is_complete: true });
+    const algorithmNames = completedLevels.map(level => level.algorithm_name);
+    
+    const randomQuestions = await Question.aggregate([
+      { $match: { algorithm_name: { $in: algorithmNames } } },
+      { $sample: { size: 10 } }
+    ]);
+
     res.json(randomQuestions);
   } catch (error) {
     console.error(error);

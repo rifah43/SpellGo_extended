@@ -302,7 +302,7 @@ class KMP extends Phaser.Scene{
                             ease:"linear",
                             duration:1000,
                             onComplete:()=>{
-                                new KMP2({ctx:this}).startPhaseTwo();
+                                new KMP2({ctx:this}, this.levelName).startPhaseTwo();
                             }
                         });
                     }

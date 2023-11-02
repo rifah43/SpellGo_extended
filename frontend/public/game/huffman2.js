@@ -1,9 +1,10 @@
 class Huffman2 {
-    constructor(con) {
+    constructor(con, levelName) {
         this.ctx = con.ctx;
         this.tree = this.ctx.tree;
+        this.levelName = levelName;
     }
-    startPhaseTwo() {
+    async startPhaseTwo() {
         this.zero = new Button({ ctx: this.ctx, btnName: "Zero", x: 20, y: config.height / 2 }).createButtons();
         this.one = new Button({ ctx: this.ctx, btnName: "One", x: 20, y: config.height / 2 + 60 }).createButtons();
         this.node=this.tree[0];
@@ -46,7 +47,7 @@ class Huffman2 {
             this.node.container.add(graphics);
         };
 
-        this.one.getByName("btn").on("pointerdown", () => {
+        this.one.getByName("btn").on("pointerdown", async () => {
             if(this.node.right){
                 const pos=this.node.rightLine;
                 updateLine(pos[0], pos[1], pos[2], pos[3]);
@@ -56,40 +57,36 @@ class Huffman2 {
 
                 if(this.node.value && this.node.value==this.values[this.currentIndex]){
                     if(this.currentIndex<this.ctx.frequency.length){
-                        setTimeout(()=>{
+                        setTimeout(async ()=>{
                             this.setCurrent();
                             graphics.clear();
                             if(this.currentIndex>=this.ctx.frequency.length){
                                 this.reward = new Reward({ ctx: this.ctx, maxScore: 2000 });
                                 this.score = this.reward.totalScore;
                                 this.bestTime = this.reward.timeEfficiency;
-                                this.levelId = this.ctx.levelName;
-                          
-                                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                                // const storedCsrfToken = this.getStoredCsrfToken(); // Modify this line to call the function
-                                console.log(csrfToken);
+                                this.levelNo = this.levelName;
+                            
                                 try {
-                                  const response = fetch('/store', {
-                                    method: 'POST',
-                                    headers: {
-                                      'Content-Type': 'application/json',
-                                      'X-CSRF-Token': csrfToken
-                                    },
-                                    body: JSON.stringify({
-                                      score: this.score,
-                                      bestTime: this.bestTime,
-                                      levelId: this.levelId
-                                    })
-                                  });
-                          
-                                  if (response.ok) {
-                                    const responseData = response.json();
-                                    console.log(responseData);
-                                  } else {
-                                    throw new Error('Error: ' + response.status);
-                                  }
-                                } catch (error) {
-                                  console.error('Error:', error);
+                                    console.log(this.levelNo, this.score, this.bestTime, this.ctx);
+                                    const response = await fetch('http://localhost:5000/game/rewards', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            score: this.score,
+                                            bestTime: this.bestTime,
+                                            levelNo: this.levelNo,
+                                        }),
+                                    });
+                                    
+                                    if (response.ok) {
+                                        const responseData = await response.json();
+                                        console.log(responseData);
+                                    } else {
+                                        throw new Error('Error: ' + response.status);
+                                    }}catch (error) {
+                                console.error('Error:', error);
                                 }
                                 this.ctx.scene.start("gameSucceed", {
                                     reward: this.reward,
@@ -119,7 +116,7 @@ class Huffman2 {
             }
             
         });
-        this.zero.getByName("btn").on("pointerdown", () => {
+        this.zero.getByName("btn").on("pointerdown", async () => {
             if(this.node.left){
                 const pos=this.node.leftLine;
                 updateLine(pos[0], pos[1], pos[2], pos[3]);
@@ -129,41 +126,37 @@ class Huffman2 {
                 
                 if(this.node.value && this.node.value==this.values[this.currentIndex]){
                     if(this.currentIndex<this.ctx.frequency.length){
-                        setTimeout(()=>{
+                        setTimeout(async ()=>{
                             this.setCurrent();
                             graphics.clear();
                             if(this.currentIndex>=this.ctx.frequency.length){
                                 this.reward = new Reward({ ctx: this.ctx, maxScore: 2000 });
                                 this.score = this.reward.totalScore;
-        this.bestTime = this.reward.timeEfficiency;
-        this.levelId = this.ctx.levelName;
-  
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        // const storedCsrfToken = this.getStoredCsrfToken(); // Modify this line to call the function
-        console.log(csrfToken);
-        try {
-          const response = fetch('/store', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': csrfToken
-            },
-            body: JSON.stringify({
-              score: this.score,
-              bestTime: this.bestTime,
-              levelId: this.levelId
-            })
-          });
-  
-          if (response.ok) {
-            const responseData = response.json();
-            console.log(responseData);
-          } else {
-            throw new Error('Error: ' + response.status);
-          }
-        } catch (error) {
-          console.error('Error:', error);
-        }
+                                this.bestTime = this.reward.timeEfficiency;
+                                this.levelNo = this.levelName;
+                        
+                                try {
+                                    console.log(this.levelNo, this.score, this.bestTime, this.reward);
+                                    const response = await fetch('http://localhost:5000/game/rewards', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            score: this.score,
+                                            bestTime: this.bestTime,
+                                            levelNo: this.levelNo,
+                                        }),
+                                    });
+                                    
+                                    if (response.ok) {
+                                        const responseData = await response.json();
+                                        console.log(responseData);
+                                    } else {
+                                        throw new Error('Error: ' + response.status);
+                                    }} catch (error) {
+                                console.error('Error:', error);
+                                }
                                 this.ctx.scene.start("gameSucceed", {
                                     reward: this.reward,
                                     todo: [

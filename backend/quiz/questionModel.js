@@ -10,6 +10,10 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  algorithm_name: {
+    type: String,
+    required: true,
+  },
   answers: [answerSchema],
 });
 

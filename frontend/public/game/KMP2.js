@@ -1,11 +1,12 @@
 class KMP2{
-    constructor(con){
+    constructor(con, levelName){
         this.ctx=con.ctx;
         this.i=0;
         this.j=0;
         this.patternLen=this.ctx.pt.length;
         this.num=0;
         this.matchingDone=false;
+        this.levelName = levelName;
     }
     createText(){
         this.text=["Yellow", "Yellow","Orange","Yellow","Yellow", "Yellow","Lime","Yellow", "Yellow","Orange","Yellow","Yellow", "Yellow","Orange"];
@@ -161,35 +162,32 @@ class KMP2{
                             this.matchingDone=true;
                             this.reward = new Reward({ ctx: this.ctx, maxScore: 1000 });
                             this.score = this.reward.totalScore;
-        this.bestTime = this.reward.timeEfficiency;
-        this.levelId = this.ctx.levelName;
-  
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        // const storedCsrfToken = this.getStoredCsrfToken(); // Modify this line to call the function
-        console.log(csrfToken);
-        try {
-          const response = fetch('/store', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': csrfToken
-            },
-            body: JSON.stringify({
-              score: this.score,
-              bestTime: this.bestTime,
-              levelId: this.levelId
-            })
-          });
-  
-          if (response.ok) {
-            const responseData = response.json();
-            console.log(responseData);
-          } else {
-            throw new Error('Error: ' + response.status);
-          }
-        } catch (error) {
-          console.error('Error:', error);
-        }
+                            this.bestTime = this.reward.timeEfficiency;
+                            this.levelNo = this.levelName;
+                    
+                            try {
+                            const response = fetch('http://localhost:5000/game/rewards', {
+                                method: 'POST',
+                                headers: {
+                                'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                score: this.score,
+                                bestTime: this.bestTime,
+                                levelNo: this.levelNo,
+                                })
+                            });
+                    
+                            if (response.ok) {
+                                const responseData = response.json();
+                                console.log(responseData);
+                            } else {
+                                throw new Error('Error: ' + response.status);
+                            }
+                            } catch (error) {
+                            console.error('Error:', error);
+                            }
+
                             this.ctx.scene.start("gameSucceed", {
                                     reward: this.reward,
                                     todo: [

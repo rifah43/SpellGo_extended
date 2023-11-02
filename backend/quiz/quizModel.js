@@ -4,7 +4,7 @@ const User = require('../user/userModel.js');
 const quizSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Replace 'User' with the actual name of your User model
+    ref: 'User', 
     required: true,
   },
   questions: [String],

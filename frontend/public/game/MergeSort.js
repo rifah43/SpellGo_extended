@@ -100,34 +100,31 @@ class MergeSort extends Phaser.Scene {
         this.reward = new Reward({ ctx: this, maxScore: 4000 });
         this.score = this.reward.totalScore;
         this.bestTime = this.reward.timeEfficiency;
-        this.levelId = this.levelName;
-  
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        // const storedCsrfToken = this.getStoredCsrfToken(); // Modify this line to call the function
-        console.log(csrfToken);
+        this.levelNo = this.levelName;
+
         try {
-          const response = fetch('/store', {
+        const response = fetch('http://localhost:5000/game/rewards', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': csrfToken
+            'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              score: this.score,
-              bestTime: this.bestTime,
-              levelId: this.levelId
+            score: this.score,
+            bestTime: this.bestTime,
+            levelNo: this.levelNo,
             })
-          });
-  
-          if (response.ok) {
+        });
+
+        if (response.ok) {
             const responseData = response.json();
             console.log(responseData);
-          } else {
+        } else {
             throw new Error('Error: ' + response.status);
-          }
-        } catch (error) {
-          console.error('Error:', error);
         }
+        } catch (error) {
+        console.error('Error:', error);
+        }
+
         this.scene.start("gameSucceed", {
             reward: this.reward,
             todo: [

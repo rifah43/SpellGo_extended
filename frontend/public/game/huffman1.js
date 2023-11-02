@@ -202,7 +202,7 @@ class Huffman1 extends Phaser.Scene {
 
                                             if(this.btns.length==1){
                                                 this.btns.pop().alpha=0;
-                                                this.phase2=new Huffman2({ctx:this}).startPhaseTwo();
+                                                this.phase2=new Huffman2({ctx:this}, this.levelName).startPhaseTwo();
                                             }
                                         }
                                     }

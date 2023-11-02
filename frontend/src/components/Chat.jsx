@@ -1,19 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import {
+  MainContainer,
+  ChatContainer,
+  MessageList,
+  Message,
+  MessageInput,
+  TypingIndicator,
+} from '@chatscope/chat-ui-kit-react';
 
 const Chat = () => {
-  const [prompt, setPrompt] = useState('');
-  const [response, setResponse] = useState('');
+  const [messages, setMessages] = useState([
+    {
+      message: "Hello, I'm ChatGPT! Ask me anything.",
+      direction: 'incoming',
+    },
+  ]);
+  const [isTyping, setIsTyping] = useState(false);
+  const messageListRef = useRef(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSend = async (message) => {
+    const newMessage = {
+      message,
+      direction: 'outgoing',
+      sender: "user"
+    };
+
+    const newMessages = [...messages, newMessage];
+
+    setMessages(newMessages);
+    setIsTyping(true);
+
     try {
       const resp = await axios.post('http://localhost:5000/user/chatbot', {
-        prompt: prompt, 
+        prompt: message,
       });
+      setIsTyping(false);
 
       if (resp.status === 200) {
-        setResponse(resp.data.response);
+        const chatGPTMessage = {
+          message: resp.data.response,
+          direction: 'incoming',
+          sender: "ChatGPT"
+        };
+        const final = [...newMessages, chatGPTMessage];
+        setMessages(final);
+
+        if (messageListRef.current) {
+          messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+        }
       } else {
         console.error('Error:', resp.status);
       }
@@ -22,19 +58,26 @@ const Chat = () => {
     }
   };
 
+  useEffect(() => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
     <div className='message-container'>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Enter your prompt:
-          <input type="text" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-      <div>
-        <strong>Response:</strong>
-        <p>{response}</p>
-      </div>
+      <MainContainer>
+        <ChatContainer>
+          <MessageList
+            typingIndicator={isTyping ? <TypingIndicator message="ChatGPT is typing" /> : null}
+          >
+            {messages.map((message, i) => (
+              <Message key={i} model={message}/>
+            ))}
+          </MessageList>
+          <MessageInput placeholder="Type a message here" onSend={handleSend} />
+        </ChatContainer>
+      </MainContainer>
     </div>
   );
 };

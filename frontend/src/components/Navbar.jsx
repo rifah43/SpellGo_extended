@@ -12,7 +12,10 @@ function Navbar() {
   };
   const userRole = localStorage.getItem('role');
   const quizLink = userRole === 'user' ? '/dashboard/perform-quiz' : '/dashboard/quiz';
-  const showProgressLink = userRole === 'user';
+  let showProgressLink = false;
+  if (userRole === 'user') {
+    showProgressLink = true;
+  }
 
   return (
     <nav className="navbar">
@@ -43,20 +46,33 @@ function Navbar() {
                 <Link to="/dashboard/profile-edit">Profile</Link>
               </li>
               <hr />
-              <li className="dropdown-item">
-                <Link to={quizLink}>Quiz</Link>
-              </li>
-              <hr />
-              <li className="dropdown-item">
-                <Link to="/dashboard/game">Game</Link>
-              </li>
-              <hr />
               {showProgressLink && (
-                <><li className="dropdown-item">
-                  <Link to="/dashboard/progress">Progress</Link>
-                </li><hr />
+                <>
+                <li className="dropdown-item">
+                <Link to={quizLink}>Quiz</Link>
+                </li>
+                <hr />
+                <li className="dropdown-item">
+                <Link to="/dashboard/game">Game</Link>
+                </li>
+                <hr />
+                  <li className="dropdown-item">
+                    <Link to="/dashboard/progress">Progress</Link>
+                  </li>
+                  <hr />
                   <li className="dropdown-item">
                     <Link to="/dashboard/chatbot">Chatbot</Link>
+                  </li>
+                </>
+              )}
+              {!showProgressLink && (
+                <>
+                  <li className="dropdown-item">
+                <Link to={quizLink}>Add Question</Link>
+                  </li>
+                  <hr />
+                  <li className="dropdown-item">
+                    <Link to="/dashboard/add-level">Add Level</Link>
                   </li>
                 </>
               )}
@@ -67,4 +83,5 @@ function Navbar() {
     </nav>
   );
 }
+
 export default Navbar;

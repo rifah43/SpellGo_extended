@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-// import './Add.css';
 
 function AddQuestion({ onClose }) {
   const [question, setQuestion] = useState('');
+  const [algorithm, setAlgorithm] = useState('');
   const [options, setOptions] = useState([
     { isCorrect: true, value: '' },
     { isCorrect: false, value: '' },
@@ -10,28 +10,29 @@ function AddQuestion({ onClose }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     try {
       const formData = {
         question: question,
         options: options,
+        algorithm: algorithm,
       };
       const token = localStorage.getItem('token');
-  
+
       if (!token) {
         window.location.href = '/login';
         return;
       }
-  
+
       const response = await fetch('http://localhost:5000/quiz/questions/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, 
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log('New question:', data);
@@ -48,7 +49,7 @@ function AddQuestion({ onClose }) {
       console.error(error);
     }
   };
-  
+
   const handleAddOption = () => {
     if (options.length >= 5) {
       alert('Maximum five options can be added!');
@@ -101,43 +102,54 @@ function AddQuestion({ onClose }) {
               ></textarea>
             </div>
             <div className="form-group">
+              <label htmlFor="algorithm">Algorithm Name:</label>
+              <input
+                className="form-control"
+                type='text'
+                id="algorithm"
+                value={algorithm}
+                onChange={(event) => setAlgorithm(event.target.value)}
+                required
+              ></input>
+            </div>
+            <div className="form-group">
               <label>Options:</label>
               {options.map((option, index) => (
-  <div key={index} className="input-group my-2">
-    <div className="input-group-prepend">
-      <div className="input-group-text">
-        <input
-          type="radio"
-          name="correct_answer"
-          value={index}
-          onChange={() => handleSelectOption(index)}
-          checked={option.isCorrect}
-        />
-      </div>
-    </div>
-    <input
-      type="text"
-      className="form-control"
-      placeholder={`Option ${index + 1}`}
-      value={option.value}
-      onChange={(event) => {
-        const newOptions = [...options];
-        newOptions[index].value = event.target.value;
-        setOptions(newOptions);
-      }}
-      required
-    />
-    <div className="input-group-append">
-      <button
-        className="btn btn-danger"
-        type="button"
-        onClick={() => handleRemoveOption(index)}
-      >
-        Remove
-      </button>
-    </div>
-  </div>
-))}
+                <div key={index} className="input-group my-2">
+                  <div className="input-group-prepend">
+                    <div className="input-group-text">
+                      <input
+                        type="radio"
+                        name="correct_answer"
+                        value={index}
+                        onChange={() => handleSelectOption(index)}
+                        checked={option.isCorrect}
+                      />
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder={`Option ${index + 1}`}
+                    value={option.value}
+                    onChange={(event) => {
+                      const newOptions = [...options];
+                      newOptions[index].value = event.target.value;
+                      setOptions(newOptions);
+                    }}
+                    required
+                  />
+                  <div className="input-group-append">
+                    <button
+                      className="btn btn-danger"
+                      type="button"
+                      onClick={() => handleRemoveOption(index)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
               <button
                 className="btn btn-success my-2"
                 type="button"
@@ -155,4 +167,5 @@ function AddQuestion({ onClose }) {
     </div>
   );
 }
+
 export default AddQuestion;

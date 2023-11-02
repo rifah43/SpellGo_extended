@@ -1,11 +1,12 @@
 class BubbleSortController {
-    constructor(ctx) {
+    constructor(ctx, levelName) {
       this.live = 3;
       this.cutScenePlaying = true;
       this.ctx = ctx;
       this.errMessage = "";
       this.swapDone = false;
       this.skipDone = false;
+      this.levelName = levelName;
     }
   
     perform(callback) {
@@ -46,10 +47,6 @@ class BubbleSortController {
       });
     }
   
-    getStoredCsrfToken() {
-      return "{{ csrf_token() }}";
-    }
-  
     async switching() {
       if (!this.isSkipRight()) {
         return;
@@ -64,33 +61,29 @@ class BubbleSortController {
         this.reward = new Reward({ ctx: this.ctx, maxScore: 1000 });
         this.score = this.reward.totalScore;
         this.bestTime = this.reward.timeEfficiency;
-        this.levelId = this.ctx.levelName;
-  
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        // const storedCsrfToken = this.getStoredCsrfToken(); // Modify this line to call the function
-        console.log(csrfToken);
+        this.levelNo = this.levelName;
+
         try {
-          const response = await fetch('/store', {
+        const response = fetch('http://localhost:5000/game/rewards', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': csrfToken
+            'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              score: this.score,
-              bestTime: this.bestTime,
-              levelId: this.levelId
+            score: this.score,
+            bestTime: this.bestTime,
+            levelNo: this.levelNo,
             })
-          });
-  
-          if (response.ok) {
-            const responseData = await response.json();
+        });
+
+        if (response.ok) {
+            const responseData = response.json();
             console.log(responseData);
-          } else {
+        } else {
             throw new Error('Error: ' + response.status);
-          }
+        }
         } catch (error) {
-          console.error('Error:', error);
+        console.error('Error:', error);
         }
   
         this.ctx.scene.start("gameSucceed", {
