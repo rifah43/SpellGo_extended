@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const Progress = () => {
   const [completedLevels, setCompletedLevels] = useState([]);
+  const [coins, setCoins] = useState(0);
   const [levels, setLevels] = useState([]);
 
   useEffect(() => {
@@ -17,13 +18,16 @@ const Progress = () => {
       },
     })
       .then((response) => {
+        // console.log(response.json);
         if (!response.ok) {
           throw new Error('Failed to fetch quiz data');
         }
         return response.json();
       })
       .then((data) => {
+        console.log(data);
         setCompletedLevels(data.reports);
+        setCoins(data.coins);
       })
       .catch((error) => console.error(error));
 
@@ -44,14 +48,14 @@ const Progress = () => {
       .catch((error) => console.error(error));
   }, []);
 
-  const sum = 300; // Set your hardcoded points here
-  const loadingPercentage = (completedLevels.length / levels.length) * 100; // Set the loading percentage you want to display
+  const sum = coins; // Set your hardcoded points here
+  const loadingPercentage = (completedLevels.length / 6) * 100; // Set the loading percentage you want to display
 
   // const calculateLoadingPercentage = (totalLevels, completedLevels) => {
   //   if (totalLevels.length === 0) return 0;
   //   return (completedLevels.length / totalLevels.length) * 100;
   // };
-
+  const filteredLevels = levels.filter((level) => level.algorithm_name !== "general");
   return (
     <div style={pageStyle}>
       <br />
@@ -69,32 +73,32 @@ const Progress = () => {
             </tr>
           </thead>
           <tbody>
-            {levels.map((level, index) => {
-              const completedLevel = completedLevels.find(
-                (item) => item.level_id === level._id
-              );
+      {filteredLevels.map((level, index) => {
+        const completedLevel = completedLevels.find(
+          (item) => item.level_id === level._id
+        );
 
-              const bestTime = completedLevel ? completedLevel.best_time : null;
-              const bestScore = completedLevel ? completedLevel.best_score : null;
+        const bestTime = completedLevel ? completedLevel.best_time : null;
+        const bestScore = completedLevel ? completedLevel.best_score : null;
 
-              return (
-                <tr key={level._id}>
-                  <td style={tableCellStyle}>{level.algorithm_name}</td>
-                  <td style={tableCellStyle}>
-                    <input
-                      type="checkbox"
-                      id={`level-${level._id}`}
-                      checked={completedLevel !== undefined}
-                      disabled={completedLevel !== undefined}
-                      style={completedLevel !== undefined ? blackCheckboxStyle : checkboxStyle}
-                    />
-                  </td>
-                  <td style={tableCellStyle}>{bestTime}</td>
-                  <td style={tableCellStyle}>{bestScore}</td>
-                </tr>
-              );
-            })}
-          </tbody>
+        return (
+          <tr key={level._id}>
+            <td style={tableCellStyle}>{level.algorithm_name}</td>
+            <td style={tableCellStyle}>
+              <input
+                type="checkbox"
+                id={`level-${level._id}`}
+                checked={completedLevel !== undefined}
+                disabled={completedLevel !== undefined}
+                style={completedLevel !== undefined ? blackCheckboxStyle : checkboxStyle}
+              />
+            </td>
+            <td style={tableCellStyle}>{bestTime}</td>
+            <td style={tableCellStyle}>{bestScore}</td>
+          </tr>
+        );
+      })}
+    </tbody>
         </table>
       </div>
       <div style={loadingBarContainerStyle}>

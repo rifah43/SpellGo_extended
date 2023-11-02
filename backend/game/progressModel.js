@@ -15,6 +15,10 @@ const progressSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  algo: {
+    type: String,
+    required: true,
+  },
   best_time: {
     type: Number,
     default: 0,

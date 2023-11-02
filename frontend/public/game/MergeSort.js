@@ -95,6 +95,7 @@ class MergeSort extends Phaser.Scene {
         this.startSorting();
     }
     async startSorting(){
+        const token = localStorage.getItem('token');
         let currentNode=this.make_tree({x:config.width/2,y:config.height - this.startFrom},'root',0,this.array.length-1);
         await this.mergeSort(0, this.array.length-1,currentNode,0);
         this.reward = new Reward({ ctx: this, maxScore: 4000 });

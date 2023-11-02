@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    coins: {
+        type: Number,
+        default: 0,
+        required: false
+    },
     theme: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Theme' ,

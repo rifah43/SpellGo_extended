@@ -161,6 +161,7 @@ class KMP2{
         this.btnContainer.visible=false;
     }
     startPhaseTwo(){
+        const token = localStorage.getItem('token');
         this.createText();
         this.createButtons();
         

@@ -46,6 +46,7 @@ class BubbleSortController {
         })
     }
     async switching() {
+        const token = localStorage.getItem('token');
         if (!this.isSkipRight()) {
             return;
         }

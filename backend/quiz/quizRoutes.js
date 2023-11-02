@@ -6,6 +6,7 @@ const authMiddleware = require('../middleware/authMiddleware.js');
 const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
 const Level = require('../game/levelModel.js');
+const User = require('../user/userModel.js');
 const fs = require('fs');
 require('dotenv').config();
 
@@ -77,9 +78,11 @@ router.get('/quiz/quiz', authMiddleware.authenticate, async (req, res) => {
 
 router.post('/quiz/evaluate', authMiddleware.authenticate, async (req, res) => {
   try {
-    const user = req.role;
+    const userRole = req.role;
+    const userId = req._id;
+    const user = await User.findOne({ _id: userId });
 
-    if (user !== 'user') {
+    if (userRole !== 'user') {
       return res.status(403).json({ message: 'Access denied' });
     }
 
@@ -102,13 +105,13 @@ router.post('/quiz/evaluate', authMiddleware.authenticate, async (req, res) => {
 
       // Find the corresponding question document
       const questionDocument = questionDocuments.find(doc => doc._id.toString() === question);
-      console.log('Question document:', questionDocument);
+      // console.log('Question document:', questionDocument);
       if (!questionDocument) {
         return res.status(400).json({ message: 'Invalid question ID' });
       }
 
       const selectedAnswer = questionDocument.answers.find((answer) => answer._id.toString() === selectedAnswerId);
-      console.log('Selected answer:', selectedAnswer);
+      // console.log('Selected answer:', selectedAnswer);
       let isCorrect = false;
 
       if (selectedAnswer) {
@@ -144,6 +147,8 @@ router.post('/quiz/evaluate', authMiddleware.authenticate, async (req, res) => {
       timeRequired: timeSpent,
       points: score,
     });
+    user.coins += Math.ceil(score);
+    await user.save();
 
     await quiz.save();
 
@@ -212,7 +217,7 @@ router.post('/quiz/evaluate', authMiddleware.authenticate, async (req, res) => {
         console.error(error);
         return res.status(500).json({ message: 'Error sending email' });
       }
-      console.log('Email sent:', info.response);
+      // console.log('Email sent:', info.response);
       res.status(200).json({ score, correct, incorrect: 10 - correct, results });
     });
 

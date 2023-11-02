@@ -224,6 +224,7 @@ class BinarySearch extends Phaser.Scene {
         return Math.floor((this.leftPoint + this.rightPoint) / 2) - 1;
     }
     update() {
+        const token = localStorage.getItem('token');
         this.countdown.update();
         if (!this.midChosen) {
             this.countdown.pause();

@@ -424,6 +424,7 @@ class Dijkstra extends Phaser.Scene{
         
     }
     async update(){
+        const token = localStorage.getItem('token');
         if(this.cityDefeated==this.map.length){
             this.scene.pause();
             // pause the timer, player won!!!!!!

@@ -5,6 +5,7 @@ class Huffman2 {
         this.levelName = levelName;
     }
     startPhaseTwo() {
+        const token = localStorage.getItem('token');
         this.zero = new Button({ ctx: this.ctx, btnName: "Zero", x: 20, y: config.height / 2 }).createButtons();
         this.one = new Button({ ctx: this.ctx, btnName: "One", x: 20, y: config.height / 2 + 60 }).createButtons();
         this.node=this.tree[0];

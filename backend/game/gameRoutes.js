@@ -7,7 +7,7 @@ const authMiddleware = require('../middleware/authMiddleware.js');
 
 router.post('/game/rewards', authMiddleware.authenticate, async (req, res) => {
   try {
-    console.log(req);
+    // console.log(req);
     const { score, bestTime, levelNo } = req.body;
     const userId = req._id;
 
@@ -21,7 +21,7 @@ router.post('/game/rewards', authMiddleware.authenticate, async (req, res) => {
     }
 
     let progress = await Progress.findOne({ user_id: user._id, level_id: level._id });
-    console.log(progress, level, user, score, bestTime, levelNo);
+    // console.log(progress, level, user, score, bestTime, levelNo);
     if (!progress) {
       progress = new Progress({
         level_id: level._id,
@@ -29,8 +29,10 @@ router.post('/game/rewards', authMiddleware.authenticate, async (req, res) => {
         best_time: bestTime,
         best_score: score,
         is_complete: true,
+        algo: level.algorithm_name,
       });
-      level.is_complete = true;
+      // level.is_complete = true;
+      user.coins += Math.ceil(score);
     } else {
       if (bestTime < progress.best_time) {
         progress.best_time = bestTime;
@@ -39,7 +41,8 @@ router.post('/game/rewards', authMiddleware.authenticate, async (req, res) => {
         progress.best_score = score;
       }
     }
-    await level.save();
+    await user.save();
+    // await level.save();
     await progress.save();
 
     res.status(201).json({ message: 'Reward saved successfully' });
@@ -64,11 +67,13 @@ router.post('/add/levels', async (req, res) => {
 router.get('/progress/reports', authMiddleware.authenticate, async (req, res) => {
   try {
     const userId = req._id;
+    const user = await User.find({ _id: userId });
     const progressReports = await Progress.find({ user_id: userId });
     if (!progressReports) {
       return res.status(404).json({ error: 'Progress Reports not found' });
     }
-    res.status(201).json({ reports: progressReports });
+    // console.log(progressReports);
+    res.status(201).json({ reports: progressReports , coins: user[0].coins});
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: 'Failed to get progress reports' });
