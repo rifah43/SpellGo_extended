@@ -1,12 +1,12 @@
 class KMP2{
-    constructor(con, levelName){
+    constructor(con,levelName){
         this.ctx=con.ctx;
         this.i=0;
         this.j=0;
         this.patternLen=this.ctx.pt.length;
         this.num=0;
         this.matchingDone=false;
-        this.levelName = levelName;
+        this.levelName=levelName;
     }
     createText(){
         this.text=["Yellow", "Yellow","Orange","Yellow","Yellow", "Yellow","Lime","Yellow", "Yellow","Orange","Yellow","Yellow", "Yellow","Orange"];
@@ -119,6 +119,7 @@ class KMP2{
                 this.i++;
                 if(this.i==this.text.length){
                     this.reward = new Reward({ ctx: this.ctx, maxScore: 1000 });
+                    const token = localStorage.getItem('token');
                     this.score = this.reward.totalScore;
                     this.bestTime = this.reward.timeEfficiency;
                     this.levelNo = this.levelName;
@@ -146,12 +147,13 @@ class KMP2{
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                    }
+                    }    
                     this.ctx.scene.start("gameSucceed", {
-                        reward: this.reward,
-                        todo: [
-                            { text: "You have done very well!", speed: window.speeds.normal }
-                        ]
+                            reward: this.reward,
+                            todo: [
+                                { text: "You have done very well!", speed: window.speeds.normal }
+                            ],
+                            key: "kmp"
                     })
                 }
             }
@@ -161,7 +163,6 @@ class KMP2{
         this.btnContainer.visible=false;
     }
     startPhaseTwo(){
-        const token = localStorage.getItem('token');
         this.createText();
         this.createButtons();
         
@@ -189,34 +190,35 @@ class KMP2{
                         if(this.i==this.text.length){
                             this.matchingDone=true;
                             this.reward = new Reward({ ctx: this.ctx, maxScore: 1000 });
+                            const token = localStorage.getItem('token');
                             this.score = this.reward.totalScore;
-                                this.bestTime = this.reward.timeEfficiency;
-                                this.levelNo = this.levelName;
+                            this.bestTime = this.reward.timeEfficiency;
+                            this.levelNo = this.levelName;
 
-                                try {
-                                    console.log(this.levelNo, this.score, this.bestTime, this.reward);
-                                    const response = await fetch('http://localhost:5000/game/rewards', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            Authorization: `Bearer ${token}`,
-                                        },
-                                        body: JSON.stringify({
-                                            score: this.score,
-                                            bestTime: this.bestTime,
-                                            levelNo: this.levelNo,
-                                        }),
-                                    });
+                            try {
+                                console.log(this.levelNo, this.score, this.bestTime, this.reward);
+                                const response = await fetch('http://localhost:5000/game/rewards', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        Authorization: `Bearer ${token}`,
+                                    },
+                                    body: JSON.stringify({
+                                        score: this.score,
+                                        bestTime: this.bestTime,
+                                        levelNo: this.levelNo,
+                                    }),
+                                });
 
-                                    if (response.ok) {
-                                        const responseData = await response.json();
-                                        console.log(responseData);
-                                    } else {
-                                        throw new Error('Error: ' + response.status);
-                                    }
-                                } catch (error) {
-                                    console.error('Error:', error);
+                                if (response.ok) {
+                                    const responseData = await response.json();
+                                    console.log(responseData);
+                                } else {
+                                    throw new Error('Error: ' + response.status);
                                 }
+                            } catch (error) {
+                                console.error('Error:', error);
+                            }
                             this.ctx.scene.start("gameSucceed", {
                                     reward: this.reward,
                                     todo: [
