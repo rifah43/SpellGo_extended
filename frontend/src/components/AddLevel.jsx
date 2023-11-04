@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Add.css';
 
 function LevelForm() {
   const [formData, setFormData] = useState({
@@ -39,7 +40,7 @@ function LevelForm() {
             onChange={handleChange}
           />
         </div>
-        <div>
+        <div class="custom-form">
           <label htmlFor="level_no">Level Number:</label>
           <input
             type="number"
@@ -49,6 +50,7 @@ function LevelForm() {
             onChange={handleChange}
           />
         </div>
+
         <div>
           <button type="submit">Add Level</button>
         </div>

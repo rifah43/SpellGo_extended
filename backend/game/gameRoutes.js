@@ -93,4 +93,15 @@ router.get('/level/info', authMiddleware.authenticate, async (req, res) => {
   }
 });
 
+router.get('/admin/level', async (req, res) => {
+  try {
+    const levelData = await Level.find({ algorithm_name: { $ne: 'general' } }); 
+    console.log(levelData);
+    res.json(levelData);
+  } catch (error) {
+    console.error('Error fetching levels:', error);
+    res.status(500).json({ error: 'An error occurred while fetching level data.' });
+  }
+});
+
 module.exports = router;

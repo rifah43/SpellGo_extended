@@ -11,6 +11,8 @@ import Chat from './Chat';
 import Theme from './Theme';
 import LevelForm from './AddLevel';
 import Leaderboard from './Leaderboard';
+import Levels from './Displaylevel';
+import Users from './Users';
 
 function Dashboard() {
   const [role, setRole] = useState(false);
@@ -34,10 +36,10 @@ function Dashboard() {
       <div className="dashboard">
         <div className="dashboard-content">
           <Routes>
-            <Route path="/" element={<Leaderboard />} />
             <Route path="/profile-edit" element={<ProfileUpdate />} />
             {role && (
               <>
+                <Route path="/" element={<Leaderboard />} />
                 <Route path="/progress" element={<Progress />} />
                 <Route path="/perform-quiz" element={<QuizComponent />} />
                 <Route path="/game" element={<GameComponent />} />
@@ -47,6 +49,8 @@ function Dashboard() {
             )}
             {!role && (
               <>
+                <Route path="/" element={<Users />} />
+                <Route path="/levels" element={<Levels />} />
                 <Route path="/quiz" element={<QuestionList />} />
                 <Route path="/add-level" element={<LevelForm />} />
               </>

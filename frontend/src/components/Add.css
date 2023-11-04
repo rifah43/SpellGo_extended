@@ -5,6 +5,32 @@
     align-items: center;
     min-height: 100vh;
   }
+  .custom-form {
+    /* Add your custom CSS styles here */
+    margin-bottom: 20px;
+  }
+  
+  .custom-form label {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .custom-form input[type="number"] {
+    width: 100px; /* Adjust the width as needed */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  /* Custom styling for input when it's in focus */
+  .custom-form input[type="number"]:focus {
+    border-color: #007BFF; /* Change the border color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle box shadow */
+  }
+  
   
   .modal {
     background: rgba(0, 0, 0, 0.5);

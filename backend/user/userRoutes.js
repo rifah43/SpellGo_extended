@@ -215,4 +215,16 @@ router.get('/user/leaderboard', async (req, res) => {
   }
 });
 
+router.get('/user/list', async (req, res) => {
+  try {
+    // console.log(User[0]);
+    const userData = await User.find({ role: 'user' },'firstname lastname');
+    console.log(userData);
+    res.json(userData);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'An error occurred while fetching user data.' });
+  }
+});
+
 module.exports = router;

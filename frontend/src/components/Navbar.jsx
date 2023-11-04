@@ -31,7 +31,7 @@ function Navbar() {
           {dropdownOpen && (
             <ul className="dropdown">
               <li className="dropdown-item">
-                <Link to="/dashboard/progress">Home</Link>
+                <Link to="/dashboard">Home</Link>
               </li>
               <hr />
               {/* <li className="dropdown-item">
@@ -39,15 +39,15 @@ function Navbar() {
               </li>
               <hr /> */}
               <li className="dropdown-item">
-                <Link to="/dashboard/progress">Dashboard</Link>
-              </li>
-              <hr />
-              <li className="dropdown-item">
                 <Link to="/dashboard/profile-edit">Profile</Link>
               </li>
               <hr />
               {showProgressLink && (
                 <>
+                <li className="dropdown-item">
+                <Link to="/dashboard/progress">Dashboard</Link>
+                </li>
+                <hr />
                 <li className="dropdown-item">
                 <Link to={quizLink}>Quiz</Link>
                 </li>
@@ -67,6 +67,10 @@ function Navbar() {
               )}
               {!showProgressLink && (
                 <>
+                <li className="dropdown-item">
+                <Link to="/dashboard/levels">Dashboard</Link>
+                </li>
+                <hr />
                   <li className="dropdown-item">
                 <Link to={quizLink}>Add Question</Link>
                   </li>
