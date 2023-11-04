@@ -9,29 +9,36 @@
 }
 
 * {
-  box-sizing:border-box;
+  box-sizing: border-box;
 }
 
 body {
   background: #333;
   padding: 0;
   margin: 0;
-  /* overflow: hidden; */
+  overflow: hidden; /* Allow the game to take up the full viewport */
 }
 
 .game-container {
-  position: relative; 
-  width: 1120px;
-  height: 550px;
-  margin: 20px auto;
-  outline: 1px solid #fff;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  margin: 0; /* Remove any margin */
+  padding: 0; /* Remove any padding */
+  outline: none; /* Remove the outline (for accessibility) */
 
-  /* transform: scale(3) translateY(50%); */
+  /* Optional: To center the canvas horizontally and vertically, you can use flexbox. */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .game-container canvas {
   image-rendering: pixelated;
+  width: 100%; /* Ensure the canvas doesn't exceed the viewport width */
+  height: 100vh; /* Ensure the canvas doesn't exceed the viewport height */
 }
+
 canvas{
   position: absolute;
   top: 0;

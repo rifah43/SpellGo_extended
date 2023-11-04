@@ -1,5 +1,7 @@
 /* Centered Container */
 .centered-container {
+    left: 30%;
+    top: 30%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,6 +18,7 @@
 
 /* Leaderboard Container */
 .leaderboard-container {
+    left: 30%;
     height: 50vh;
     width: 45vw;
     padding: 20px;

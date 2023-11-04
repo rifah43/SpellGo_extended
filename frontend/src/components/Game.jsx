@@ -10,10 +10,8 @@ function GameComponent() {
     <div className="iframe-container "><iframe className='center-iframe'
     title="Phaser Game"
     src="/game/index.html"
-    width="1200" 
-    height="100%" 
-    frameBorder="0"
-    scrolling="no"
+    width="80%" 
+    height="90%" 
   /></div> 
   );
 }

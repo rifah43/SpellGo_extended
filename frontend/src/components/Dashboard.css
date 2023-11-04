@@ -10,11 +10,13 @@
 .dashboard-content {
   position: absolute;
   top: 50%; /* Vertically center the content */
-  left: 50%; /* Horizontally center the content */
+  left: 48%; /* Horizontally center the content */
   transform: translate(-50%, -50%); /* Center the content both horizontally and vertically */
   right: 0;
   bottom: 0;
   padding: 20px;
+  width: 83vw;
+  height: 90vh;
 }
   
   .dashboard-title {
@@ -65,4 +67,5 @@
   a:hover {
     color: #ffffff;
   }
+
   

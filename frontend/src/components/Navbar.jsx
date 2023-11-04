@@ -45,7 +45,7 @@ function Navbar() {
               {showProgressLink && (
                 <>
                 <li className="dropdown-item">
-                <Link to="/dashboard/progress">Dashboard</Link>
+                <Link to="/dashboard">Dashboard</Link>
                 </li>
                 <hr />
                 <li className="dropdown-item">

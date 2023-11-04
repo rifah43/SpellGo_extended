@@ -42,7 +42,7 @@ function Dashboard() {
                 <Route path="/" element={<Leaderboard />} />
                 <Route path="/progress" element={<Progress />} />
                 <Route path="/perform-quiz" element={<QuizComponent />} />
-                <Route path="/game" element={<GameComponent />} />
+                <Route path="/game" element={<GameComponent className="game-component"/>} />
                 <Route path="/chatbot" element={<Chat />} />
                 <Route path="/customThemeAdder" element={<Theme />} />
               </>
