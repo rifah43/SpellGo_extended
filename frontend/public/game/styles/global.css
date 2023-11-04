@@ -31,12 +31,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.283); */
 }
 
 .game-container canvas {
   image-rendering: pixelated;
   width: 100%; /* Ensure the canvas doesn't exceed the viewport width */
   height: 100vh; /* Ensure the canvas doesn't exceed the viewport height */
+  
 }
 
 canvas{
