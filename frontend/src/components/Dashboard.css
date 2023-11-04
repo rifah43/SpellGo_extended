@@ -1,23 +1,21 @@
-/* Dashboard.css */
-
-/* Position the Navbar on the left */
 .navbar {
-    position: fixed;
-    top: 15%;
-    left: 2%;
-    width: 10vw; /* Adjust the width as needed */
-    height: 70vh; /* Full height */
-  }
-  
-  /* Adjust the margin to create space between the Navbar and the content */
-  .dashboard-content {
-    position: absolute;
-    top: 20%;
-    left: 7%; /* Match the Navbar width */
-    right: 0;
-    bottom: 0;
-    padding: 20px;
-  }
+  position: fixed;
+  top: 15%;
+  left: 2%;
+  width: 10vw; /* Adjust the width as needed */
+  height: 70vh; /* Full height */
+}
+
+/* Center the dashboard content */
+.dashboard-content {
+  position: absolute;
+  top: 50%; /* Vertically center the content */
+  left: 50%; /* Horizontally center the content */
+  transform: translate(-50%, -50%); /* Center the content both horizontally and vertically */
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+}
   
   .dashboard-title {
     top: 2%;

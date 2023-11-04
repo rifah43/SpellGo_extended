@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const Theme = require('../customTheme/themeModel.js')
+const Theme = require('../customTheme/themeModel.js');
 require('dotenv').config();
 function sendResetEmail(email, resetToken) {
   const transporter = nodemailer.createTransport({
@@ -201,4 +201,18 @@ router.post('/user/update-profile', async (req, res) => {
     res.status(500).json({ message: 'Error: ' + error });
   }
 });
+
+router.get('/user/leaderboard', async (req, res) => {
+  try {
+    const leaderboardData = await User.find({ role: 'user' }, 'firstname coins')
+      .sort({ coins: -1 })
+      .exec();
+      console.log(leaderboardData);
+    res.json(leaderboardData);
+  } catch (error) {
+    console.error('Error fetching leaderboard:', error);
+    res.status(500).json({ error: 'An error occurred while fetching leaderboard data.' });
+  }
+});
+
 module.exports = router;

@@ -10,6 +10,7 @@ import ProfileUpdate from './Profile';
 import Chat from './Chat';
 import Theme from './Theme';
 import LevelForm from './AddLevel';
+import Leaderboard from './Leaderboard';
 
 function Dashboard() {
   const [role, setRole] = useState(false);
@@ -33,6 +34,7 @@ function Dashboard() {
       <div className="dashboard">
         <div className="dashboard-content">
           <Routes>
+            <Route path="/" element={<Leaderboard />} />
             <Route path="/profile-edit" element={<ProfileUpdate />} />
             {role && (
               <>
