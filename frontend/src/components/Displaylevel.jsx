@@ -21,7 +21,7 @@ const Levels = () => {
   return (
     <div className="centered-container">
       <div className="leaderboard-container">
-        <h1 className="leaderboard-title">level</h1>
+        <h1 className="leaderboard-title">Game levels</h1>
         <table className="leaderboard-table">
           <thead>
             <tr>
