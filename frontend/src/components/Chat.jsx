@@ -65,14 +65,14 @@ const Chat = () => {
   }, [messages]);
 
   return (
-    <div className='message-container'>
-      <MainContainer>
-        <ChatContainer>
+    <div style={{ width: '100%', height: '80%' }}>
+      <MainContainer style={{ borderRadius: '1em', padding: '1%' }}>
+        <ChatContainer style={{ padding: '1%' }}>
           <MessageList
             typingIndicator={isTyping ? <TypingIndicator message="ChatGPT is typing" /> : null}
           >
             {messages.map((message, i) => (
-              <Message key={i} model={message}/>
+              <Message key={i} model={message} />
             ))}
           </MessageList>
           <MessageInput placeholder="Type a message here" onSend={handleSend} />
