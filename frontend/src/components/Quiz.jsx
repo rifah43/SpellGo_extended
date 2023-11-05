@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Form, Radio, Button, Spin } from 'antd';
+import axios from 'axios';
 import './Quiz.css';
 
+const { Group } = Radio;
+
 function QuizComponent() {
+  const [form] = Form.useForm();
   const [questions, setQuestions] = useState([]);
   const [timeLeft, setTimeLeft] = useState(300);
   let timerInterval;
@@ -59,15 +64,7 @@ function QuizComponent() {
     });
   }
 
-  const handleAnswerChange = (questionId, answerId) => {
-    setSelectedAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionId]: answerId,
-    }));
-  };
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+  const handleFormSubmit = async () => {
     clearInterval(timerInterval);
 
     const selectedAnswersArray = Object.values(selectedAnswers);
@@ -81,17 +78,15 @@ function QuizComponent() {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await fetch('http://localhost:5000/quiz/evaluate', {
-        method: 'POST',
+      const response = await axios.post('http://localhost:5000/quiz/evaluate', quizData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(quizData),
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      if (response.status === 200) {
+        const result = response.data;
         console.log('Quiz Result:', result);
       } else {
         console.error('Failed to submit quiz data.');
@@ -101,53 +96,50 @@ function QuizComponent() {
     }
   };
 
+  const handleAnswerChange = (questionId, answerId) => {
+    setSelectedAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [questionId]: answerId,
+    }));
+  };
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Spin tip="Loading..." />;
   }
+
   return (
-    <div>
-      <div className="back-link">
-        <a href="/dashboard">Back to Dashboard</a>
-      </div>
+    <div style={{height: '100%', width: '100%'}}>
       <br />
-      <form onSubmit={handleFormSubmit}>
+      <Form form={form} onFinish={handleFormSubmit}>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
         <div id="timer">Time left: {formatTime(timeLeft)}</div>
-        <div className="question-container">
+        </div>
+        <div style={{height: '100%', width: '100%', overflowY: 'auto', padding: '1%'}}>
           {questions.map((question, index) => (
             <div className="question" key={question._id}>
               <h3>
                 {index + 1}. {question.question}
               </h3>
-              <br />
-              <br />
-              <hr />
-              <ol>
+              <Group
+                onChange={(e) => handleAnswerChange(question._id, e.target.value)}
+                value={selectedAnswers[question._id]}
+              >
                 {question.answers && question.answers.length > 0 ? (
                   question.answers.map((answer) => (
-                    <li key={answer._id}>
-                      <label>
-                        <input
-                          type="radio"
-                          name={`question_${question._id}`}
-                          value={answer._id}
-                          onChange={() => handleAnswerChange(question._id, answer._id)}
-                          checked={selectedAnswers[question._id] === answer._id}
-                        />
-                        {answer.value}
-                      </label>
-                      <hr />
-                    </li>
+                    <div key={answer._id}>
+                      <Radio value={answer._id}>{answer.value}</Radio>
+                    </div>
                   ))
                 ) : (
                   <p>No answers found for this question.</p>
                 )}
-              </ol>
+              </Group>
             </div>
           ))}
         </div>
         <input type="hidden" name="time" id="time" value={300 - timeLeft} />
-        <button type="submit">Submit</button>
-      </form>
+        <button type='submit'>Submit</button>
+      </Form>
     </div>
   );
 }

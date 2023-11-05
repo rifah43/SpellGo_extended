@@ -1,77 +1,91 @@
-import React, { useState } from 'react';
-// import './Profile.css';
+import React from 'react';
+import { Form, Input, Button, message, Layout } from 'antd';
 import './LoginForm.css';
 
-function ProfileUpdate() {
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [password, setPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+const { Content } = Layout;
 
-  const handleProfileUpdate = async () => {
+const contentStyle = {
+  background: '#fff',
+  borderRadius: '1rem 1rem 1rem 1rem', // Apply curved border to top only
+  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', // Optional shadow
+  paddingLeft: '5%', 
+  paddingRight: '5%', 
+  paddingTop: '3%',
+};
+
+function ProfileUpdate() {
+  const [form] = Form.useForm();
+  const token = localStorage.getItem('token')
+
+  const handleProfileUpdate = async (values) => {
     try {
       const response = await fetch('http://localhost:5000/user/update-profile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          firstname: firstname,
-          lastname: lastname,
-          email: email,
-          password: password,
-          newPassword: newPassword,
-        }),
+        body: JSON.stringify(values),
       });
 
       if (response.ok) {
-        setMessage('Profile updated successfully.');
+        message.success('Profile updated successfully.');
       } else {
-        setMessage('Profile update failed.');
+        message.error('Profile update failed.');
       }
     } catch (error) {
       console.error('Error:', error);
+      message.error('An error occurred while updating the profile.');
     }
   };
 
   return (
-    <div className='container'>
-      <h2>Profile Update</h2>
-      <input
-        type="text"
-        placeholder="Change First Name"
-        value={firstname}
-        onChange={(e) => setFirstname(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Change Last Name"
-        value={lastname}
-        onChange={(e) => setLastname(e.target.value)}
-      />
-      <input
-        type="email"
-        placeholder="Change Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Previous Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="New Password"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
-      />
-      <button onClick={handleProfileUpdate}>Update Profile</button>
-      <p>{message}</p>
-    </div>
+    <Layout style={{ height: '75vh', borderRadius: '1rem 1rem 1rem 1rem', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'}}>
+      <Content style={contentStyle}>
+        <h2>Profile Update</h2>
+        <Form
+          form={form}
+          onFinish={handleProfileUpdate}
+          layout="vertical"
+        >
+          <Form.Item
+            name="firstname"
+            label="Change First Name"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="lastname"
+            label="Change Last Name"
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Change Email"
+          >
+            <Input type="email" />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="Previous Password"
+          >
+            <Input type="password" />
+          </Form.Item>
+          <Form.Item
+            name="newPassword"
+            label="New Password"
+          >
+            <Input type="password" />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Update Profile
+            </Button>
+          </Form.Item>
+        </Form>
+      </Content>
+    </Layout>
   );
 }
 

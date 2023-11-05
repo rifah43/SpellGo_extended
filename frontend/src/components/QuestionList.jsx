@@ -1,33 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Table, Button, Modal } from 'antd';
 import './Question.css';
 import AddQuestion from './AddQuestion';
 
 const QuestionList = () => {
   const [questions, setQuestions] = useState([]);
   const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
+  const token = localStorage.getItem('token');
+
+  const fetchQuestions = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/quiz/questions', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setQuestions(data);
+      } else {
+        console.error('Failed to fetch questions:', response.status);
+      }
+    } catch (error) {
+      console.error('Failed to fetch questions:', error);
+    }
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem('token'); 
-
-    const fetchQuestions = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/quiz/questions', {
-          headers: {
-            Authorization: `Bearer ${token}`, 
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setQuestions(data);
-        } else {
-          console.error('Failed to fetch questions:', response.status);
-        }
-      } catch (error) {
-        console.error('Failed to fetch questions:', error);
-      }
-    };
-
     fetchQuestions();
   }, []);
 
@@ -36,13 +36,13 @@ const QuestionList = () => {
     try {
       const response = await fetch(`http://localhost:5000/quiz/questions/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
         method: 'DELETE',
       });
 
       if (response.ok) {
-        window.location.reload();
+        fetchQuestions();
       } else {
         alert('Failed to delete question');
       }
@@ -59,40 +59,48 @@ const QuestionList = () => {
     setShowAddQuestionModal(false);
   };
 
+  const columns = [
+    {
+      title: 'No.',
+      dataIndex: 'index',
+      key: 'index',
+      width: '10%',
+    },
+    {
+      title: 'Question',
+      dataIndex: 'question',
+      key: 'question',
+      width: '75%',
+    },
+    {
+      title: 'Delete',
+      key: 'delete',
+      width: '15%',
+      render: (text, record) => (
+        <div style={{ textAlign: 'center' }}>
+          <Button onClick={() => handleDelete(record._id)}>Delete</Button>
+        </div>
+      ),
+    },
+  ];
+
+  const data = questions.map((ques, index) => ({
+    key: ques._id,
+    index: index + 1,
+    question: ques.question,
+    _id: ques._id,
+  }));
+
   return (
     <div>
       <h2>Questions</h2>
-      <button><Link to="/dashboard">Dashboard</Link></button>
       <button onClick={handleShowAddQuestionModal}>Add Question</button>
-      <table>
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>Question</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {questions.map((ques, index) => (
-            <tr key={ques._id}>
-              <td>{index + 1}</td>
-              <td>{ques.question}</td>
-              <td>
-                <button onClick={() => handleDelete(ques._id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
-      {showAddQuestionModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={handleCloseAddQuestionModal}>&times;</span>
-            <AddQuestion onClose={handleCloseAddQuestionModal} />
-          </div>
-        </div>
-      )}
+      <Table columns={columns} dataSource={data} scroll={{ y: 400 }} />
+
+      <Modal title="Add Questions" open={showAddQuestionModal} onOk={handleCloseAddQuestionModal} onCancel={handleCloseAddQuestionModal} footer={null}>
+        <AddQuestion onClose={handleCloseAddQuestionModal} onFetch={fetchQuestions}/>
+      </Modal>
     </div>
   );
 };

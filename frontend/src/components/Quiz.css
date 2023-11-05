@@ -43,8 +43,8 @@ form {
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
   letter-spacing: 4px; /* Ensure even spacing between characters */
-  max-width: 20%;
-  max-height: fit-content
+  max-width: 40%;
+  max-height: fit-content;
 }
 
 .question-container {

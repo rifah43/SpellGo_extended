@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const Theme = require('../customTheme/themeModel.js');
+const authMiddleware = require('../middleware/authMiddleware.js');
 require('dotenv').config();
 function sendResetEmail(email, resetToken) {
   const transporter = nodemailer.createTransport({
@@ -159,7 +160,8 @@ router.post('/user/reset-password', async (req, res) => {
     res.status(500).json({ message: 'Error: ' + error });
   }
 });
-router.post('/user/update-profile', async (req, res) => {
+router.post('/user/update-profile', authMiddleware.authenticate , async (req, res) => {
+  console.log(req._id);
   const _id = req._id;
   const { firstname, lastname, email, password, newPassword } = req.body;
   try {

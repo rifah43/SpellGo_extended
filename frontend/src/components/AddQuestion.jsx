@@ -1,170 +1,168 @@
 import React, { useState } from 'react';
+import { Form, Input, Button, message, Layout, Radio } from 'antd';
+import { PlusOutlined, MinusSquareOutlined } from '@ant-design/icons';
 
-function AddQuestion({ onClose }) {
-  const [question, setQuestion] = useState('');
-  const [algorithm, setAlgorithm] = useState('');
-  const [options, setOptions] = useState([
-    { isCorrect: true, value: '' },
-    { isCorrect: false, value: '' },
-  ]);
+const { Content } = Layout;
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+function AddQuestion({ onClose, onFetch }) {
+  const [form] = Form.useForm();
 
+  const handleSubmit = async (values) => {
     try {
-      const formData = {
-        question: question,
-        options: options,
-        algorithm: algorithm,
-      };
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        window.location.href = '/login';
-        return;
-      }
-
-      const response = await fetch('http://localhost:5000/quiz/questions/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('New question:', data);
-        if (data.success) {
-          onClose();
-          window.location.reload();
-        } else {
-          window.location.reload();
+      const newOptions = form.getFieldValue('options');
+      var trueVars = 0;
+      // console.log(newOptions);
+      newOptions.forEach((option) => {
+        if (option.isCorrect === true) {
+          trueVars = trueVars + 1;
         }
-      } else {
-        console.error(`HTTP error! Status: ${response.status}`);
+      });
+      if (trueVars > 0) {
+        const formData = {
+          question: values.question,
+          options: values.options,
+          algorithm: values.algorithm,
+        };
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+          window.location.href = '/login';
+          return;
+        }
+
+        const response = await fetch('http://localhost:5000/quiz/questions/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('New question:', data);
+          if (data.success) {
+            form.resetFields();
+            onClose();
+            onFetch();
+          } else {
+            onFetch();
+          }
+        } else {
+          console.error(`HTTP error! Status: ${response.status}`);
+        }
+      }
+      else {
+        alert('Please select an option that is the answer to the question')
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleAddOption = () => {
-    if (options.length >= 5) {
-      alert('Maximum five options can be added!');
-      return;
-    }
-    setOptions([
-      ...options,
-      { isCorrect: false, value: '' },
-    ]);
-  };
+  // This function initializes new form items with default values
+  const initializeNewOption = () => ({
+    isCorrect: false,
+    value: null,
+  });
 
-  const handleRemoveOption = (index) => {
-    if (options.length <= 2) {
-      alert('Minimum two options should be present!');
-      return;
+  // Function to handle radio button change
+  const handleRadioChange = (e, fieldName) => {
+    const newOptions = form.getFieldValue('options');
+    var trueVars = 0;
+    // console.log(newOptions);
+    newOptions.forEach((option) => {
+      if (option.isCorrect === true) {
+        trueVars = trueVars + 1;
+      }
+    });
+    if (trueVars > 1) {
+      newOptions.map((option, index) => {
+        if (index !== fieldName) {
+          option.isCorrect = false;
+        }
+      });
+      form.setFieldsValue({ options: newOptions });
     }
-    setOptions(options.filter((_, i) => i !== index));
-  };
-
-  const handleSelectOption = (index) => {
-    setOptions(
-      options.map((option, i) => ({
-        ...option,
-        isCorrect: i === index,
-      }))
-    );
+    console.log(newOptions);
   };
 
   return (
-    <div className="container-fluid w-100">
-      <div className="header">
-        <h1 className="title" id="exampleLabel">
-          Add Question
-        </h1>
-        <button className="btn btn-link" onClick={onClose}>
-          Close
-        </button>
-      </div>
-      <div className="row">
-        <div className="col-md-12">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="question">Question:</label>
-              <textarea
-                className="form-control"
-                id="question"
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                required
-              ></textarea>
-            </div>
-            <div className="form-group">
-              <label htmlFor="algorithm">Algorithm Name:</label>
-              <input
-                className="form-control"
-                type='text'
-                id="algorithm"
-                value={algorithm}
-                onChange={(event) => setAlgorithm(event.target.value)}
-                required
-              ></input>
-            </div>
-            <div className="form-group">
-              <label>Options:</label>
-              {options.map((option, index) => (
-                <div key={index} className="input-group my-2">
-                  <div className="input-group-prepend">
-                    <div className="input-group-text">
-                      <input
-                        type="radio"
-                        name="correct_answer"
-                        value={index}
-                        onChange={() => handleSelectOption(index)}
-                        checked={option.isCorrect}
-                      />
+    <Layout style={{ marginTop: '20px' }}>
+      <Content style={{ padding: '1%' }}>
+        <Form
+          form={form}
+          onFinish={handleSubmit}
+          layout="vertical"
+        >
+          <Form.Item
+            label="Question:"
+            name="question"
+            rules={[{ required: true, message: 'Please enter the question.' }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+          <Form.Item
+            label="Algorithm Name:"
+            name="algorithm"
+            rules={[{ required: true, message: 'Please enter the algorithm name.' }]}
+          >
+            <Input />
+          </Form.Item>
+          <h3>Options:</h3>
+          <Content style={{ height: '380px', overflowY: 'auto' }}>
+            <Form.List
+              name="options"
+              initialValue={[initializeNewOption(), initializeNewOption()]}
+            >
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field, index) => (
+                    <div key={field.key}>
+                      {fields.length > 2 ? <MinusSquareOutlined className="dynamic-delete-button" onClick={() => { remove(field.name) }} /> : null}
+                      <Form.Item
+                        label={`Option ${index + 1}`}
+                        name={[field.name, 'value']}
+                        rules={[{ required: true, message: 'Please enter an option.' }]}
+                      >
+                        <Input placeholder={`Option ${index + 1}`} />
+                      </Form.Item>
+                      <Form.Item
+                        label="Is Correct:"
+                        name={[field.name, 'isCorrect']}
+                      >
+                        {/* {console.log(field)} */}
+                        <Radio.Group onChange={(e) => handleRadioChange(e, field.name)}>
+                          <Radio value={true}>Yes</Radio>
+                          <Radio value={false}>No</Radio>
+                        </Radio.Group>
+                      </Form.Item>
                     </div>
-                  </div>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder={`Option ${index + 1}`}
-                    value={option.value}
-                    onChange={(event) => {
-                      const newOptions = [...options];
-                      newOptions[index].value = event.target.value;
-                      setOptions(newOptions);
-                    }}
-                    required
-                  />
-                  <div className="input-group-append">
-                    <button
-                      className="btn btn-danger"
-                      type="button"
-                      onClick={() => handleRemoveOption(index)}
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => {
+                        add(initializeNewOption()); // Initialize new option with default values
+                      }}
+                      icon={<PlusOutlined />}
                     >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-              <button
-                className="btn btn-success my-2"
-                type="button"
-                onClick={handleAddOption}
-              >
-                Add Option
-              </button>
-              <button className="btn btn-primary float-right" type="submit">
-                Submit
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+                      Add Option
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
+            </Form.List>
+          </Content>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </Content>
+    </Layout>
   );
 }
 

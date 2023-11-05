@@ -1,26 +1,19 @@
 import React, { useState } from 'react';
+import { Form, Input, Button, message } from 'antd';
 import axios from 'axios';
-import './Add.css';
 
 function LevelForm() {
-  const [formData, setFormData] = useState({
-    algorithm_name: '',
-    level_no: 0,
-  });
+  const [form] = Form.useForm();
 
   const [message, setMessage] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async (values) => {
+    console.log(values);
     try {
-      const response = await axios.post('http://localhost:5000/add/levels', formData);
+      const response = await axios.post('http://localhost:5000/add/levels', values);
       setMessage(response.data.message);
+      alert(message);
+      form.resetFields();
     } catch (error) {
       setMessage('Failed to add a new level.');
     }
@@ -29,33 +22,28 @@ function LevelForm() {
   return (
     <div>
       <h2>Add a New Level</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="algorithm_name">Algorithm Name:</label>
-          <input
-            type="text"
-            id="algorithm_name"
-            name="algorithm_name"
-            value={formData.algorithm_name}
-            onChange={handleChange}
-          />
-        </div>
-        <div class="custom-form">
-          <label htmlFor="level_no">Level Number:</label>
-          <input
-            type="number"
-            id="level_no"
-            name="level_no"
-            value={formData.level_no}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div>
-          <button type="submit">Add Level</button>
-        </div>
-      </form>
-      <p>{message}</p>
+      <Form form={form} onFinish={handleSubmit}>
+        <Form.Item
+          label="Algorithm Name:"
+          name="algorithm_name"
+          rules={[{ required: true, message: 'Please enter the algorithm name.' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Level Number:"
+          name="level_no"
+          rules={[
+            { required: true, message: 'Please enter the level number.' },
+            // { type: 'number', message: 'Level number must be a number.' },
+          ]}
+        >
+          <Input type="number" />
+        </Form.Item>
+        <Form.Item>
+          <button type='sybmit'>Add Level</button>
+        </Form.Item>
+      </Form>
     </div>
   );
 }

@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer');
 const Level = require('../game/levelModel.js');
 const User = require('../user/userModel.js');
 const fs = require('fs');
+const Progress = require('../game/progressModel.js');
 require('dotenv').config();
 
 router.get('/quiz/questions', authMiddleware.authenticate, async (req, res) => {
@@ -61,13 +62,14 @@ router.post('/quiz/questions/add', authMiddleware.authenticate, async (req, res)
 
 router.get('/quiz/quiz', authMiddleware.authenticate, async (req, res) => {
   try {
-    const completedLevels = await Level.find({ is_complete: true });
-    const algorithmNames = completedLevels.map(level => level.algorithm_name);
-    
+    const completedLevels = await Progress.find({ user_id: req._id, is_complete: true });
+    const algorithmNames = completedLevels.map(level => level.algo);
     const randomQuestions = await Question.aggregate([
       { $match: { algorithm_name: { $in: algorithmNames } } },
       { $sample: { size: 10 } }
     ]);
+
+    console.log(randomQuestions);
 
     res.json(randomQuestions);
   } catch (error) {

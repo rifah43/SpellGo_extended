@@ -7,6 +7,10 @@ import Dashboard from './components/Dashboard';
 import ForgotPassword from './components/ForgotPassword';
 import DiscordChatWidget from './components/DiscordWidget';
 import ResetPassword from './components/ResetPassword';
+import Test from './components/Test';
+import { Layout } from 'antd';
+
+const { Header, Footer, Sider, Content } = Layout;
 
 function App() {
   const location = useLocation();
@@ -21,14 +25,14 @@ function App() {
   const appClassName = isLoggedIn ? 'App logged-in' : 'App';
 
   return (
-    <div className={appClassName}>
+    <Layout className={appClassName}>
       <Routes>
         <Route path="/register" element={<SignUpForm />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/dashboard/*" element={<Dashboard />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        
+        <Route path="/test" element={<Test />} />
       </Routes>
 
       <div className="nav-buttons-container">
@@ -59,7 +63,7 @@ function App() {
           </div>
         )}
       </div>
-    </div>
+    </Layout>
   );
 }
 

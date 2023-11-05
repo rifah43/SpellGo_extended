@@ -1,6 +1,7 @@
 /* profile-update.css */
 .container {
-    max-width: 400px;
+    width: 400px;
+    max-height: 400px;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
