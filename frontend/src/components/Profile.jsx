@@ -79,9 +79,9 @@ function ProfileUpdate() {
             <Input type="password" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <button type="submit">
               Update Profile
-            </Button>
+            </button>
           </Form.Item>
         </Form>
       </Content>

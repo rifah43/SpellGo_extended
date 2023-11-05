@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Radio, Button, Spin } from 'antd';
+import { Form, Radio, Button, Spin, Empty } from 'antd';
 import axios from 'axios';
 import './Quiz.css';
 
@@ -108,38 +108,44 @@ function QuizComponent() {
   }
 
   return (
-    <div style={{height: '100%', width: '100%'}}>
-      <br />
-      <Form form={form} onFinish={handleFormSubmit}>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-        <div id="timer">Time left: {formatTime(timeLeft)}</div>
+    <div style={{ height: '100%', width: '100%' }}>
+      {questions.length === 0 ? <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{backgroundColor: 'white', padding: '1%', borderRadius: '1em'}}>
+          <Empty />
         </div>
-        <div style={{height: '100%', width: '100%', overflowY: 'auto', padding: '1%'}}>
-          {questions.map((question, index) => (
-            <div className="question" key={question._id}>
-              <h3>
-                {index + 1}. {question.question}
-              </h3>
-              <Group
-                onChange={(e) => handleAnswerChange(question._id, e.target.value)}
-                value={selectedAnswers[question._id]}
-              >
-                {question.answers && question.answers.length > 0 ? (
-                  question.answers.map((answer) => (
-                    <div key={answer._id}>
-                      <Radio value={answer._id}>{answer.value}</Radio>
-                    </div>
-                  ))
-                ) : (
-                  <p>No answers found for this question.</p>
-                )}
-              </Group>
-            </div>
-          ))}
-        </div>
-        <input type="hidden" name="time" id="time" value={300 - timeLeft} />
-        <button type='submit'>Submit</button>
-      </Form>
+      </div>
+        :
+        <Form form={form} onFinish={handleFormSubmit}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div id="timer">Time left: {formatTime(timeLeft)}</div>
+          </div>
+          <div style={{ height: '100%', width: '100%', overflowY: 'auto', padding: '1%' }}>
+            {questions.map((question, index) => (
+              <div className="question" key={question._id}>
+                <h3>
+                  {index + 1}. {question.question}
+                </h3>
+                <Group
+                  onChange={(e) => handleAnswerChange(question._id, e.target.value)}
+                  value={selectedAnswers[question._id]}
+                >
+                  {question.answers && question.answers.length > 0 ? (
+                    question.answers.map((answer) => (
+                      <div key={answer._id}>
+                        <Radio value={answer._id}>{answer.value}</Radio>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No answers found for this question.</p>
+                  )}
+                </Group>
+              </div>
+            ))}
+          </div>
+          <input type="hidden" name="time" id="time" value={300 - timeLeft} />
+          <button type='submit'>Submit</button>
+        </Form>
+      }
     </div>
   );
 }
