@@ -6,7 +6,7 @@ class Person extends GameObject {
 
     this.isPlayerControlled = config.isPlayerControlled || false;
 
-    this.speed=2
+    this.speed=4
     this.directionUpdate = {
       "up": ["y", -this.speed],
       "down": ["y", this.speed],

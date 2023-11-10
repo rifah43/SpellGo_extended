@@ -39,7 +39,7 @@ function Navbar() {
               </li>
               <hr /> */}
               <li className="dropdown-item">
-                <Link to="/dashboard/profile-edit">Profile</Link>
+                <Link to="/dashboard/profile-edit">Profile Settings</Link>
               </li>
               <hr />
               {showProgressLink && (

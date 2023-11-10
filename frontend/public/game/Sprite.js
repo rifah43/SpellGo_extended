@@ -106,9 +106,9 @@ class Sprite {
         this.gameObject.viewSize,
         this.gameObject.viewSize
       );
-    ctx.strokeStyle = "red"; // set border color
-    ctx.lineWidth = 2; // set border width
-    ctx.strokeRect(32, 16, 64, 64);
+    // ctx.strokeStyle = "red"; // set border color
+    // ctx.lineWidth = 2; // set border width
+    // ctx.strokeRect(32, 16, 64, 64);
     this.updateAnimationProgress();
   }
   drawDynamic(ctx) {

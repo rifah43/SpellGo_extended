@@ -64,6 +64,7 @@ router.get('/quiz/quiz', authMiddleware.authenticate, async (req, res) => {
   try {
     const completedLevels = await Progress.find({ user_id: req._id, is_complete: true });
     const algorithmNames = completedLevels.map(level => level.algo);
+    algorithmNames.push('general');
     const randomQuestions = await Question.aggregate([
       { $match: { algorithm_name: { $in: algorithmNames } } },
       { $sample: { size: 10 } }
@@ -214,21 +215,23 @@ router.post('/quiz/evaluate', authMiddleware.authenticate, async (req, res) => {
     };
 
     // Send the email
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Error sending email' });
-      }
-      // console.log('Email sent:', info.response);
-      res.status(200).json({ score, correct, incorrect: 10 - correct, results });
-    });
+    // transporter.sendMail(mailOptions, (error, info) => {
+    //   if (error) {
+    //     console.error(error);
+    //     return res.status(500).json({ message: 'Error sending email' });
+    //   }
+    //   // console.log('Email sent:', info.response);
+    //   res.status(200).json({ score, correct, incorrect: 10 - correct, results });
+    // });
 
     // Clean up - delete the generated PDF
-    fs.unlink('quiz_result.pdf', (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
+    // fs.unlink('quiz_result.pdf', (err) => {
+    //   if (err) {
+    //     console.error(err);
+    //   }
+    // });
+
+    res.status(200).json({ score, correct, incorrect: 10 - correct, results });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error during quiz evaluation' });

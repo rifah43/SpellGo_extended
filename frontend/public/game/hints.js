@@ -8,10 +8,10 @@ window.guidance={
     bubbleSort:{
         swap:[
             
-            {text:"If you see the first stair strictly larger than the second one, then swap",speed:window.speeds.normal}
+            {text:"If you see the first stair strictly larger than the second one, then swap(Press 's' to swap)",speed:window.speeds.normal}
         ],
         skip:[
-            {text:"If you see the first stair samller than the second one, then skip",speed:window.speeds.normal}
+            {text:"If you see the first stair smaller than the second one, then skip(Press 'SPACE' to skip)",speed:window.speeds.normal}
             
         ]
     },

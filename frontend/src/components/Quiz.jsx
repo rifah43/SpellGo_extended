@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Radio, Button, Spin, Empty } from 'antd';
+import { Form, Radio, Modal, Spin, Empty, Result } from 'antd';
 import axios from 'axios';
 import './Quiz.css';
+import { SmileOutlined } from '@ant-design/icons';
 
 const { Group } = Radio;
 
@@ -12,6 +13,9 @@ function QuizComponent() {
   let timerInterval;
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [showAddResultModal, setShowAddResultModal] = useState(false);
+  const [marks, setMarks] = useState(0);
+  const [totalCorrectAnswers, setTotalCorrectAnswers] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -47,6 +51,11 @@ function QuizComponent() {
   function startTimer() {
     timerInterval = setInterval(updateTimer, 1000);
   }
+
+  const handleCloseAddResultModal = () => {
+    form.resetFields();
+    setShowAddResultModal(false);
+  };
 
   function formatTime(time) {
     const minutes = Math.floor(time / 60);
@@ -88,6 +97,9 @@ function QuizComponent() {
       if (response.status === 200) {
         const result = response.data;
         console.log('Quiz Result:', result);
+        setMarks(result.score);
+        setTotalCorrectAnswers(result.correct);
+        setShowAddResultModal(true);
       } else {
         console.error('Failed to submit quiz data.');
       }
@@ -110,7 +122,7 @@ function QuizComponent() {
   return (
     <div style={{ height: '100%', width: '100%' }}>
       {questions.length === 0 ? <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div style={{backgroundColor: 'white', padding: '1%', borderRadius: '1em'}}>
+        <div style={{ backgroundColor: 'white', padding: '1%', borderRadius: '1em' }}>
           <Empty />
         </div>
       </div>
@@ -119,7 +131,7 @@ function QuizComponent() {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div id="timer">Time left: {formatTime(timeLeft)}</div>
           </div>
-          <div style={{ height: '100%', width: '100%', overflowY: 'auto', padding: '1%' }}>
+          <div style={{ height: '70vh', width: '100%', overflowY: 'auto', padding: '1%' }}>
             {questions.map((question, index) => (
               <div className="question" key={question._id}>
                 <h3>
@@ -146,6 +158,12 @@ function QuizComponent() {
           <button type='submit'>Submit</button>
         </Form>
       }
+      <Modal title="Score" open={showAddResultModal} onOk={handleCloseAddResultModal} onCancel={handleCloseAddResultModal}>
+        <Result
+          icon={<SmileOutlined />}
+          title={`Thanks for performing the quiz! \n Total marks: ${marks} \n Total correct answers: ${totalCorrectAnswers}`}
+        />
+      </Modal>
     </div>
   );
 }

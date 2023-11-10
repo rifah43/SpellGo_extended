@@ -98,18 +98,12 @@ class Room {
                 events: [
                   {
                     type: "textMessage",
-                    text: "You made it! Now find the recipe of a potion from this huge book. Good luck!",
+                    text: [{string:"You made it! Now find the recipe of a potion from this huge book. Good luck!",speed: window.speeds.fast}],
                     faceHero: "npcB",
                   },
                 ],
               },
-            ],
-            behaviorLoop: [
-              { type: "walk", direction: "right", time: 800 },
-              { type: "walk", direction: "up", time: 800 },
-              { type: "walk", direction: "left", time: 1200 },
-              { type: "walk", direction: "down", time: 300 },
-            ],
+            ]
           }),
           lantern: utils.getLantern(31, 29),
         },

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 
 function SignUpForm() {
@@ -11,7 +11,7 @@ function SignUpForm() {
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,11 +21,29 @@ function SignUpForm() {
     });
   };
 
+  const isEmailValid = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isPasswordValid = (password) => {
+    return password.length >= 8;
+  };
+
   const handleOnSubmit = async (e) => {
     e.preventDefault();
 
+    if (!isEmailValid(formData.email)) {
+      alert("Invalid email address. Please enter a valid email.");
+      return;
+    }
+
+    if (!isPasswordValid(formData.password)) {
+      alert("Password must be at least 8 characters long.");
+      return;
+    }
+
     try {
-      // Sanitize user input (escape HTML entities) before sending it to the server
       const sanitizedFormData = {
         firstname: escapeHtml(formData.firstname),
         lastname: escapeHtml(formData.lastname),
@@ -43,10 +61,8 @@ function SignUpForm() {
 
       if (response.ok) {
         const data = await response.json();
-        alert("Signup successful! You can customize this alert with server response.");
+        alert("Signup successful!");
         setFormData(initialFormData);
-
-        // Navigate to the login page after successful signup
         navigate("/login");
       } else {
         alert("Signup failed. Please try again.");
@@ -57,7 +73,6 @@ function SignUpForm() {
     }
   };
 
-  // Function to escape HTML entities
   const escapeHtml = (unsafe) => {
     return unsafe.replace(/</g, "&lt;").replace(/>/g, "&gt;");
   };
@@ -96,7 +111,9 @@ function SignUpForm() {
           onChange={handleChange}
           placeholder="Password"
         />
-        <button className="button-19" type="submit">Sign Up</button>
+        <button className="button-19" type="submit">
+          Sign Up
+        </button>
       </form>
     </div>
   );

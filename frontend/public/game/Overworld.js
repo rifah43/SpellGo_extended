@@ -42,7 +42,7 @@ class Overworld {
 
         this.map.drawUpperImage(this.ctx, cameraPerson);
 
-        this.ctx.drawImage(mapImage, utils.withGrid(2), utils.withGrid(1));
+        // this.ctx.drawImage(mapImage, utils.withGrid(2), utils.withGrid(1));
       } else {
         this.map.drawStaticLowerImage(this.ctx);
         Object.values(this.map.gameObjects)

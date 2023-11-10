@@ -51,7 +51,7 @@ form {
   max-height: 70%;
   max-width: 50%;
   align-items: center;
-  overflow-y: auto;
+  overflow-y: scroll;
   left: 23%;
 }
 

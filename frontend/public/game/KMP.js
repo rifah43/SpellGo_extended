@@ -228,7 +228,10 @@ class KMP extends Phaser.Scene {
     });
     this.countdown = new CountdownController({
       ctx: this,
-      duration: this.steps * 7000,
+      duration: this.steps * 7000, 
+      callback: () => {
+        this.scene.start("game_over", { key: "kmp" });
+      }
     });
     this.countdown.start();
     this.lps = this.add.group();
